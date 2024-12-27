@@ -1,15 +1,9 @@
 import { Component, signal } from '@angular/core';
-import { SidebarComponent } from './sidebar/sidebar.component';
+import { CreateComponent } from './create/create.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  imports: [SidebarComponent],
+  imports: [CreateComponent],
 })
-export class HomeComponent {
-  isSidebarOpen = signal(false);
-
-  toggleSidebar() {
-    this.isSidebarOpen.set(!this.isSidebarOpen());
-  }
-}
+export class HomeComponent {}

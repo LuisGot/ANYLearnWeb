@@ -1,0 +1,52 @@
+<dialog id="create" class="modal">
+  <div class="modal-box relative">
+    <h2 class="text-3xl font-semibold">Create New Topic</h2>
+    <form class="flex flex-col gap-5">
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Topic</span>
+        </label>
+        <input
+          type="text"
+          class="input input-bordered"
+          [(ngModel)]="topic"
+          name="topic"
+        />
+      </div>
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Goal</span>
+        </label>
+        <textarea
+          class="textarea textarea-bordered"
+          [(ngModel)]="goal"
+          name="goal"
+        ></textarea>
+      </div>
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Background</span>
+        </label>
+        <textarea
+          class="textarea textarea-bordered"
+          [(ngModel)]="background"
+          name="background"
+        ></textarea>
+      </div>
+      <input
+        type="button"
+        name="submit"
+        class="btn btn-primary btn-sm w-fit self-end"
+        value="Learn"
+        (click)="onSubmit()"
+      />
+    </form>
+    <div class="absolute right-2 top-2">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+          ✕
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>
