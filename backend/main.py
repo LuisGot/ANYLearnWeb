@@ -134,10 +134,13 @@ def generate_course(maintopic: str, subtopics: dict, subtopic: str):
         - **INTRODUCTION:** Brief overview (1-3 sentences)  
         - **MAIN CONTENT:** In-depth explanation with examples  
         - **EXERCISE:** Practical activity for knowledge application  
+        - **ENSURE:** a pretty but simplistic Markdown format so it is nice to read.
+        - **ALWAYS:** add the language when you are using a markdown code block.
+        - **ENSURE:** that headings are in the correct order and start with a h1 heading.
 
         ## IMPORTANT  
         - "Your precise and focused approach will make this subtopic a cornerstone of the course."  
-        - "Accuracy and clarity are key to learner success—every detail matters!" 
+        - "Accuracy and clarity are key to learner success—every detail matters!"
 
         ## User Input:
     """
