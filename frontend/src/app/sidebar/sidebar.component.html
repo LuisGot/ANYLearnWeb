@@ -1,8 +1,14 @@
-<div class="h-screen overflow-y-auto w-full p-4 sticky top-0 bg-neutral">
+<div
+  class="h-screen overflow-y-auto w-full p-4 sticky top-0 bg-neutral shadow-black shadow-2xl"
+>
   <div class="flex flex-col gap-4">
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-semibold font-cinzel">COURSES</h2>
-      <a routerLink="/">
+      <a
+        routerLink="/"
+        class="tooltip tooltip-left tooltip-accent"
+        data-tip="Learn something"
+      >
         <button
           class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
         >
@@ -10,11 +16,16 @@
         </button>
       </a>
     </div>
-    <div>
+    <div class="flex flex-col gap-2">
       @for (courseName of courseNames(); track $index) {
       <div>
         <div
-          class="group flex justify-between gap-3 items-center hover:cursor-pointer hover:bg-base-100 p-2 rounded-lg transition-all duration-300 border border-neutral hover:border-neutral-500 font-cinzel"
+          class="group flex justify-between gap-3 items-center hover:cursor-pointer p-2 rounded-lg transition-all duration-300 border border-neutral hover:border-neutral-500 font-cinzel"
+          [class]="
+            courseService.selectedCourseId() === $index
+              ? 'bg-base-100 border-neutral-500'
+              : ''
+          "
           (click)="setCourse($index)"
         >
           <div class="flex-1">
@@ -33,18 +44,28 @@
           <div class="flex items-center gap-2">
             @if (editingCourseId() !== $index) {
             <div class="flex items-center gap-2">
-              <img
-                src="/icons/pencil.svg"
-                alt="edit"
-                class="w-4 h-4 cursor-pointer"
-                (click)="startEditing($index)"
-              />
-              <img
-                src="/icons/trash.svg"
-                alt="trash"
-                class="w-4 h-4 cursor-pointer"
-                (click)="deleteCourse($index)"
-              />
+              <div
+                class="tooltip tooltip-top tooltip-accent font-sans"
+                data-tip="Edit"
+              >
+                <img
+                  src="/icons/pencil.svg"
+                  alt="edit"
+                  class="w-4 h-4 cursor-pointer"
+                  (click)="startEditing($index)"
+                />
+              </div>
+              <div
+                class="tooltip tooltip-top tooltip-accent font-sans"
+                data-tip="Delete"
+              >
+                <img
+                  src="/icons/trash.svg"
+                  alt="trash"
+                  class="w-4 h-4 cursor-pointer"
+                  (click)="deleteCourse($index)"
+                />
+              </div>
             </div>
             } @else {
             <div class="flex items-center gap-2">

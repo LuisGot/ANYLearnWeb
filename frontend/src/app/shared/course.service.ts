@@ -29,6 +29,8 @@ export class CourseService {
   course = signal<Course[]>([]);
   private courses = signal<CourseData[]>([]);
 
+  selectedCourseId = signal<number | null>(null);
+
   courseNames = computed(() =>
     this.courses().map((course) => course.courseName)
   );
@@ -76,6 +78,7 @@ export class CourseService {
     const courseData = this.courses()[id];
     if (courseData) {
       this.course.set(courseData.course);
+      this.selectedCourseId.set(id);
     }
   }
 
@@ -90,6 +93,7 @@ export class CourseService {
         this.setCourse(0);
       } else {
         this.course.set([]);
+        this.selectedCourseId.set(null);
         this.router.navigate(['/']);
       }
     }

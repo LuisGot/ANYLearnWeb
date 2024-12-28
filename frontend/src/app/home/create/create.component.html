@@ -1,5 +1,5 @@
 <dialog id="create" class="modal">
-  <div class="modal-box relative">
+  <div class="modal-box">
     @if (courseService.isLoading() === true) {
     <div
       class="bg-black/50 absolute inset-0 z-10 flex justify-center items-center"
@@ -7,7 +7,7 @@
       <span class="loading loading-ring loading-lg"></span>
     </div>
     }
-    <h2 class="text-3xl font-semibold">Create New Topic</h2>
+    <h2 class="text-3xl font-semibold">Create New Course</h2>
     <form class="flex flex-col gap-5">
       <div class="form-control">
         <label class="label">

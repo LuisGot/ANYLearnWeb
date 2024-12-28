@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {
-  private courseService = inject(CourseService);
+  courseService = inject(CourseService);
   private router = inject(Router);
 
   courseNames = this.courseService.courseNames;
