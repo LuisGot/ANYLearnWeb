@@ -6,25 +6,64 @@
         <button
           class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
         >
-          <img src="/icons/light-bulp.svg" alt="light-bulb" class="w-5 h-5" />
+          <img src="/icons/light.svg" alt="light" class="w-5 h-5" />
         </button>
       </a>
     </div>
     <div>
       @for (courseName of courseNames(); track $index) {
-      <div
-        class="group flex justify-between items-center hover:cursor-pointer hover:bg-base-100 p-2 rounded-lg transition-all duration-300 border border-neutral hover:border-neutral-500 font-cinzel"
-        (click)="setCourse($index)"
-      >
-        <div>
-          {{ courseName }}
+      <div>
+        <div
+          class="group flex justify-between gap-3 items-center hover:cursor-pointer hover:bg-base-100 p-2 rounded-lg transition-all duration-300 border border-neutral hover:border-neutral-500 font-cinzel"
+          (click)="setCourse($index)"
+        >
+          <div class="flex-1">
+            @if (editingCourseId() !== $index) {
+            <div>
+              {{ courseName }}
+            </div>
+            } @else {
+            <input
+              type="text"
+              class="input input-bordered h-6 px-2 w-full"
+              [(ngModel)]="editedCourseName"
+            />
+            }
+          </div>
+          <div class="flex items-center gap-2">
+            @if (editingCourseId() !== $index) {
+            <div class="flex items-center gap-2">
+              <img
+                src="/icons/pencil.svg"
+                alt="edit"
+                class="w-4 h-4 cursor-pointer"
+                (click)="startEditing($index)"
+              />
+              <img
+                src="/icons/trash.svg"
+                alt="trash"
+                class="w-4 h-4 cursor-pointer"
+                (click)="deleteCourse($index)"
+              />
+            </div>
+            } @else {
+            <div class="flex items-center gap-2">
+              <img
+                src="/icons/check.svg"
+                alt="check"
+                class="w-4 h-4 cursor-pointer"
+                (click)="saveEdit($index)"
+              />
+              <img
+                src="/icons/cross.svg"
+                alt="cancel"
+                class="w-4 h-4 cursor-pointer"
+                (click)="cancelEdit(); $event.stopPropagation()"
+              />
+            </div>
+            }
+          </div>
         </div>
-        <img
-          src="/icons/trash.svg"
-          alt="trash"
-          class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          (click)="deleteCourse($index); $event.stopPropagation()"
-        />
       </div>
       }
     </div>

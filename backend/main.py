@@ -1,4 +1,5 @@
-from fastapi import Body, FastAPI
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
 import requests
@@ -7,6 +8,20 @@ import json
 load_dotenv()
 
 app = FastAPI()
+
+
+origins = [
+    "http://localhost:4000",
+    "http://localhost:4200",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 api_key = os.getenv("API_KEY")
 provider_url = os.getenv("PROVIDER_URL")

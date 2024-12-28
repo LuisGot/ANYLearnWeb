@@ -6,6 +6,7 @@ import {
   computed,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
 
 interface CourseData {
   courseName: string;
@@ -21,12 +22,12 @@ interface Course {
   providedIn: 'root',
 })
 export class CourseService {
-  isLoading = signal(false);
   private platformId = inject(PLATFORM_ID);
+  private router = inject(Router);
 
-  private courses = signal<CourseData[]>([]);
-
+  isLoading = signal(false);
   course = signal<Course[]>([]);
+  private courses = signal<CourseData[]>([]);
 
   courseNames = computed(() =>
     this.courses().map((course) => course.courseName)
@@ -89,7 +90,17 @@ export class CourseService {
         this.setCourse(0);
       } else {
         this.course.set([]);
+        this.router.navigate(['/']);
       }
+    }
+  }
+
+  updateCourseName(id: number, newName: string): void {
+    if (this.isBrowser() && id >= 0 && id < this.courses().length) {
+      const updatedCourses = [...this.courses()];
+      updatedCourses[id].courseName = newName;
+      this.courses.set(updatedCourses);
+      this.saveCourses();
     }
   }
 }
