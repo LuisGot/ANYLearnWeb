@@ -1,14 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { CourseService } from '../shared/course.service';
 import { MarkdownComponent } from 'ngx-markdown';
-import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-course',
-  imports: [MarkdownComponent, RouterLink],
+  standalone: true,
+  imports: [MarkdownComponent, CommonModule],
   templateUrl: './course.component.html',
 })
 export class CourseComponent {
-  courseService = inject(CourseService);
-  courses = this.courseService.course;
+  private courseService = inject(CourseService);
+  course = this.courseService.course;
 }

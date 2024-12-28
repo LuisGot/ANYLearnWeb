@@ -32,6 +32,7 @@ export class CreateComponent {
       .post('http://localhost:8000/generate/course', this.formData())
       .subscribe((response: any) => {
         console.log(response);
+        this.courseService.addCourse(response, this.topic());
         this.courseService.course.set(response);
         this.courseService.isLoading.set(false);
         this.router.navigate(['/course']);

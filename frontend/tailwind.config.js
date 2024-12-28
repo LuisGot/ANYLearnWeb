@@ -2,13 +2,18 @@
 module.exports = {
   content: ["./src/**/*.{html,ts}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        cinzel: ["Cinzel", "sans-serif"],
+        "cinzel-decorative": ["Cinzel Decorative", "sans-serif"],
+      },
+    },
   },
   daisyui: {
     themes: [
       {
         mytheme: {
-          primary: "#ed9b40",
+          primary: "#da6308",
           secondary: "#f3f4f6",
           accent: "#ff00ff",
           neutral: "#1c1c1c",

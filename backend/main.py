@@ -135,7 +135,6 @@ def generate_course(maintopic: str, subtopics: dict, subtopic: str):
         - **MAIN CONTENT:** In-depth explanation with examples  
         - **EXERCISE:** Practical activity for knowledge application  
         - **ENSURE:** a pretty but simplistic Markdown format so it is nice to read.
-        - **ALWAYS:** add the language when you are using a markdown code block.
         - **ENSURE:** that headings are in the correct order and start with a h1 heading.
 
         ## IMPORTANT  
