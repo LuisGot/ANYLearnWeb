@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {
@@ -49,5 +49,10 @@ export class SidebarComponent {
   cancelEdit() {
     this.editingCourseId.set(null);
     this.editedCourseName = '';
+  }
+
+  learnNew() {
+    this.courseService.selectedCourseId.set(null);
+    this.router.navigate(['/']);
   }
 }

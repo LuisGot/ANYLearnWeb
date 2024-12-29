@@ -1,20 +1,18 @@
-<div
-  class="h-screen overflow-y-auto w-full p-4 sticky top-0 bg-neutral shadow-black shadow-2xl"
->
+<div class="h-screen overflow-y-auto w-full p-4 sticky top-0 bg-neutral">
   <div class="flex flex-col gap-4">
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-semibold font-cinzel">COURSES</h2>
-      <a
-        routerLink="/"
+      <div
+        (click)="learnNew()"
         class="tooltip tooltip-left tooltip-accent"
-        data-tip="Learn something"
+        data-tip="Learn"
       >
         <button
           class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
         >
           <img src="/icons/light.svg" alt="light" class="w-5 h-5" />
         </button>
-      </a>
+      </div>
     </div>
     <div class="flex flex-col gap-2">
       @for (courseName of courseNames(); track $index) {

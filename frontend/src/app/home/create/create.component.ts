@@ -10,11 +10,9 @@ import { CourseService } from '../../shared/course.service';
   templateUrl: './create.component.html',
 })
 export class CreateComponent {
-  topic = signal('FastAPI');
-  goal = signal(
-    'I want to learn how to build FastAPI endpoints that return data in JSON format.'
-  );
-  background = signal('I never used FastAPI before.');
+  topic = signal('');
+  goal = signal('');
+  background = signal('');
 
   formData = computed(() => ({
     topic: this.topic(),
