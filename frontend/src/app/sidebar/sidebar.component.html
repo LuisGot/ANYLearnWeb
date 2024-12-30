@@ -18,7 +18,7 @@
       @for (courseName of courseNames(); track $index) {
       <div>
         <div
-          class="group flex justify-between gap-3 items-center hover:cursor-pointer p-2 rounded-lg transition-all duration-300 border border-neutral hover:border-neutral-500 font-cinzel"
+          class="group flex justify-between gap-3 items-center hover:cursor-pointer p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-neutral-500 font-cinzel"
           [class]="
             courseService.selectedCourseId() === $index
               ? 'bg-base-100 border-neutral-500'
@@ -26,20 +26,20 @@
           "
           (click)="setCourse($index)"
         >
-          <div class="flex-1">
+          <div class="flex-1 min-w-0">
             @if (editingCourseId() !== $index) {
-            <div>
+            <div class="text-sm truncate">
               {{ courseName }}
             </div>
             } @else {
             <input
               type="text"
-              class="input input-bordered h-6 px-2 w-full"
+              class="text-sm input input-bordered focus:outline-none rounded-md h-5 px-2 w-full"
               [(ngModel)]="editedCourseName"
             />
             }
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 shrink-0">
             @if (editingCourseId() !== $index) {
             <div class="flex items-center gap-2">
               <div

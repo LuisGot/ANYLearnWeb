@@ -86,6 +86,7 @@ export class CourseService {
     if (this.isBrowser() && id >= 0 && id < this.courses().length) {
       const updatedCourses = [...this.courses()];
       updatedCourses.splice(id, 1);
+
       this.courses.set(updatedCourses);
       this.saveCourses();
 
@@ -94,7 +95,7 @@ export class CourseService {
       } else {
         this.course.set([]);
         this.selectedCourseId.set(null);
-        this.router.navigate(['/']);
+        this.router.navigate(['']);
       }
     }
   }

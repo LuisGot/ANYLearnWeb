@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CourseService } from '../shared/course.service';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -53,6 +53,6 @@ export class SidebarComponent {
 
   learnNew() {
     this.courseService.selectedCourseId.set(null);
-    this.router.navigate(['/']);
+    this.router.navigate(['']);
   }
 }

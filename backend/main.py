@@ -74,20 +74,16 @@ def generate_subtopics(formdata: dict):
         ## EXAMPLE of required response format:
         {
             "subtopics": [
-                "HTML Basics",
-                "HTML Structure",
-                "Key HTML Tags",
-                "CSS Overview",
-                "CSS Selectors",
-                "CSS Units",
-                "Building with HTML & CSS",
-                "Styling with CSS",
-                "Adding Images & Colors",
-                "Creating a Website Layout",
-                "Common HTML & CSS Mistakes",
-                "Best Practices for Clean Code"
+                "Introduction to HTML",
+                "HTML Structure and Key Tags",
+                "Introduction to CSS",
+                "CSS Selectors and Units",
+                "Styling and Adding Visual Elements with CSS",
+                "Creating Responsive Website Layouts",
+                "Best Practices and Common Mistakes in Web Development"
             ]
         }
+        
         ### IMPORTANT:
         - Your precision in categorizing subtopics ensures a seamless learning experience.
         - Logical progression of topics is key to effective knowledge transfer.
