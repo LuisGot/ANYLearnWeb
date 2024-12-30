@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { CourseService } from '../shared/course.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -19,6 +19,15 @@ export class SidebarComponent {
 
   editingCourseId = signal<number | null>(null);
   editedCourseName: string = '';
+
+  constructor() {
+    effect(() => {
+      if (this.courseService.shouldRedirect()) {
+        this.courseService.shouldRedirect.set(false);
+        this.router.navigate(['']);
+      }
+    });
+  }
 
   setCourse(id: number) {
     this.courseService.setCourse(id);

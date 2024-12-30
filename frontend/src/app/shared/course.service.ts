@@ -6,7 +6,6 @@ import {
   computed,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Router } from '@angular/router';
 
 interface CourseData {
   courseName: string;
@@ -23,11 +22,11 @@ interface Course {
 })
 export class CourseService {
   private platformId = inject(PLATFORM_ID);
-  private router = inject(Router);
 
   isLoading = signal(false);
   course = signal<Course[]>([]);
-  private courses = signal<CourseData[]>([]);
+  courses = signal<CourseData[]>([]);
+  shouldRedirect = signal(false);
 
   selectedCourseId = signal<number | null>(null);
 
@@ -95,7 +94,7 @@ export class CourseService {
       } else {
         this.course.set([]);
         this.selectedCourseId.set(null);
-        this.router.navigate(['']);
+        this.shouldRedirect.set(true);
       }
     }
   }
