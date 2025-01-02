@@ -7,20 +7,53 @@
       >
         ANYLearn
       </div>
-      <div
-        (click)="learnNew()"
-        class="tooltip tooltip-left tooltip-accent"
-        data-tip="Learn"
-      >
-        <button
-          class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
+      <div class="flex gap-2 items-center">
+        <div
+          class="tooltip tooltip-left tooltip-accent"
+          data-tip="Search"
+          (click)="toggleSearch()"
         >
-          <img src="/icons/light.svg" alt="light" class="w-5 h-5" />
-        </button>
+          <button
+            class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
+          >
+            <img src="/icons/search.svg" alt="search" class="w-5 h-5" />
+          </button>
+        </div>
+
+        <div
+          (click)="learnNew()"
+          class="tooltip tooltip-left tooltip-accent"
+          data-tip="Learn"
+        >
+          <button
+            class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
+          >
+            <img src="/icons/light.svg" alt="light" class="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
+    @if (showSearch()) {
+    <div class="flex items-center gap-2 mt-1">
+      <input
+        type="text"
+        class="input input-bordered input-sm w-full"
+        placeholder="Search courses..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="searchTerm.set($event)"
+      />
+      @if (searchTerm()) {
+      <img
+        src="/icons/cross.svg"
+        alt="clear search"
+        class="w-5 h-5 cursor-pointer"
+        (click)="clearSearch()"
+      />
+      }
+    </div>
+    }
     <div class="flex flex-col gap-2">
-      @for (courseName of courseNames(); track $index) {
+      @for (courseName of filteredCourseNames(); track $index) {
       <div>
         <div
           class="group flex justify-between gap-3 items-center hover:cursor-pointer p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-neutral-500 font-cinzel"

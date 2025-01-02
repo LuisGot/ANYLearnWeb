@@ -1,8 +1,7 @@
-import { Component, inject, effect } from '@angular/core';
+import { Component, inject, effect, signal, computed } from '@angular/core';
 import { CourseService } from '../shared/course.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -20,6 +19,19 @@ export class SidebarComponent {
   editingCourseId = signal<number | null>(null);
   editedCourseName: string = '';
 
+  showSearch = signal(false);
+  searchTerm = signal('');
+
+  filteredCourseNames = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    if (!term) {
+      return this.courseService.courseNames();
+    }
+    return this.courseService
+      .courseNames()
+      .filter((c) => c.toLowerCase().includes(term));
+  });
+
   constructor() {
     effect(() => {
       if (this.courseService.shouldRedirect()) {
@@ -27,6 +39,19 @@ export class SidebarComponent {
         this.router.navigate(['']);
       }
     });
+  }
+
+  toggleSearch() {
+    if (this.showSearch()) {
+      this.searchTerm.set('');
+      this.showSearch.set(false);
+    } else {
+      this.showSearch.set(true);
+    }
+  }
+
+  clearSearch() {
+    this.searchTerm.set('');
   }
 
   setCourse(id: number) {
