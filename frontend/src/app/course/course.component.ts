@@ -10,6 +10,6 @@ import { CommonModule } from '@angular/common';
   templateUrl: './course.component.html',
 })
 export class CourseComponent {
-  private courseService = inject(CourseService);
+  courseService = inject(CourseService);
   course = this.courseService.course;
 }

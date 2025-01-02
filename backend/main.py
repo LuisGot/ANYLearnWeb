@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
@@ -37,10 +37,13 @@ def llm_request(prompt: str):
         "model": llm_model,
         "messages": [{"role": "user", "content": prompt}],
     }
-
-    response = requests.post(provider_url, headers=headers, json=data)
-    response.raise_for_status()
-    return response.json()["choices"][0]["message"]["content"]
+    
+    try:
+        response = requests.post(provider_url, headers=headers, json=data)
+        response.raise_for_status()
+        return response.json()["choices"][0]["message"]["content"]
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=502, detail=f"LLM provider error: {str(e)}")
 
 
 def generate_subtopics(formdata: dict):
@@ -181,7 +184,11 @@ def generate(formdata: dict):
         results = []
         for subtopic in subtopics['subtopics']:
             results.append(generate_course(formdata['topic'], subtopics, subtopic))
-
         return results
-    except json.JSONDecodeError:
-        return {"error": "Invalid response from LLM"}
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"An unexpected error occurred: {str(e)}"
+        )

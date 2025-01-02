@@ -6,3 +6,14 @@
     <router-outlet></router-outlet>
   </div>
 </div>
+
+@if (errorService.hasError()) {
+<div
+  role="alert"
+  class="alert alert-error fixed bottom-4 right-4 flex items-center gap-2 p-4 cursor-pointer w-[450px] text-secondary z-[100]"
+  (click)="errorService.clearError()"
+>
+  <img src="/icons/cross.svg" alt="Error Icon" class="h-6 w-6 shrink-0" />
+  <span>{{ errorService.errorMessage() }}</span>
+</div>
+}

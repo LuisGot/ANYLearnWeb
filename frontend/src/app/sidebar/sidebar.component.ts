@@ -45,9 +45,9 @@ export class SidebarComponent {
     if (this.showSearch()) {
       this.searchTerm.set('');
       this.showSearch.set(false);
-    } else {
-      this.showSearch.set(true);
+      return;
     }
+    this.showSearch.set(true);
   }
 
   clearSearch() {
