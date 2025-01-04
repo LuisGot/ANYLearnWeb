@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CourseService } from '../../shared/course.service';
 import { ErrorService } from '../../shared/error.service';
+import { SidebarService } from '../../shared/sidebar.service';
 
 @Component({
   selector: 'app-create',
@@ -25,6 +26,7 @@ export class CreateComponent {
   router = inject(Router);
   courseService = inject(CourseService);
   errorService = inject(ErrorService);
+  sidebarService = inject(SidebarService);
 
   onSubmit() {
     this.courseService.isLoading.set(true);

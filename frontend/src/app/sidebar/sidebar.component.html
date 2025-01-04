@@ -1,128 +1,120 @@
-<div class="h-screen overflow-y-auto w-full p-4 sticky top-0 bg-neutral">
-  <div class="flex flex-col gap-4">
-    <div class="flex justify-between items-center">
+<div class="h-full p-4 bg-neutral flex flex-col">
+  @if (sidebarService.isOpen()) {
+  <div class="flex justify-between items-center">
+    <div
+      class="tooltip tooltip-right tooltip-accent"
+      data-tip="Sidebar"
+      (click)="sidebarService.toggle()"
+    >
+      <button
+        class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
+      >
+        <icon-sidebar classes="w-5 h-5" />
+      </button>
+    </div>
+    <div class="flex gap-2 items-center">
+      <div
+        class="tooltip tooltip-left tooltip-accent"
+        data-tip="Search"
+        (click)="toggleSearch()"
+      >
+        <button
+          class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
+        >
+          <icon-search classes="w-5 h-5" />
+        </button>
+      </div>
       <div
         (click)="learnNew()"
-        class="text-2xl font-semibold font-cinzel cursor-pointer"
+        class="tooltip tooltip-bottom tooltip-accent"
+        data-tip="Learn"
       >
-        ANYLearn
-      </div>
-      <div class="flex gap-2 items-center">
-        <div
-          class="tooltip tooltip-left tooltip-accent"
-          data-tip="Search"
-          (click)="toggleSearch()"
+        <button
+          class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
         >
-          <button
-            class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
-          >
-            <img src="/icons/search.svg" alt="search" class="w-5 h-5" />
-          </button>
-        </div>
-
-        <div
-          (click)="learnNew()"
-          class="tooltip tooltip-left tooltip-accent"
-          data-tip="Learn"
-        >
-          <button
-            class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
-          >
-            <img src="/icons/light.svg" alt="light" class="w-5 h-5" />
-          </button>
-        </div>
+          <icon-new classes="w-5 h-5" />
+        </button>
       </div>
-    </div>
-    @if (showSearch()) {
-    <div class="flex items-center gap-2 mt-1">
-      <input
-        type="text"
-        class="input input-bordered input-sm w-full"
-        placeholder="Search courses..."
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="searchTerm.set($event)"
-      />
-      @if (searchTerm()) {
-      <img
-        src="/icons/cross.svg"
-        alt="clear search"
-        class="w-5 h-5 cursor-pointer"
-        (click)="clearSearch()"
-      />
-      }
-    </div>
-    }
-    <div class="flex flex-col gap-2">
-      @for (courseName of filteredCourseNames(); track $index) {
-      <div>
-        <div
-          class="group flex justify-between gap-3 items-center hover:cursor-pointer p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-neutral-500 font-cinzel"
-          [class]="
-            courseService.selectedCourseId() === $index
-              ? 'bg-base-100 border-neutral-500'
-              : ''
-          "
-          (click)="setCourse($index)"
-        >
-          <div class="flex-1 min-w-0">
-            @if (editingCourseId() !== $index) {
-            <div class="text-sm truncate">
-              {{ courseName }}
-            </div>
-            } @else {
-            <input
-              type="text"
-              class="text-sm input input-bordered focus:outline-none rounded-md h-5 px-2 w-full"
-              [(ngModel)]="editedCourseName"
-            />
-            }
-          </div>
-          <div class="flex items-center gap-2 shrink-0">
-            @if (editingCourseId() !== $index) {
-            <div class="flex items-center gap-2">
-              <div
-                class="tooltip tooltip-top tooltip-accent font-sans"
-                data-tip="Edit"
-              >
-                <img
-                  src="/icons/pencil.svg"
-                  alt="edit"
-                  class="w-4 h-4 cursor-pointer"
-                  (click)="startEditing($index)"
-                />
-              </div>
-              <div
-                class="tooltip tooltip-top tooltip-accent font-sans"
-                data-tip="Delete"
-              >
-                <img
-                  src="/icons/trash.svg"
-                  alt="trash"
-                  class="w-4 h-4 cursor-pointer"
-                  (click)="deleteCourse($index)"
-                />
-              </div>
-            </div>
-            } @else {
-            <div class="flex items-center gap-2">
-              <img
-                src="/icons/check.svg"
-                alt="check"
-                class="w-4 h-4 cursor-pointer"
-                (click)="saveEdit($index)"
-              />
-              <img
-                src="/icons/cross.svg"
-                alt="cancel"
-                class="w-4 h-4 cursor-pointer"
-                (click)="cancelEdit(); $event.stopPropagation()"
-              />
-            </div>
-            }
-          </div>
-        </div>
-      </div>
-      }
     </div>
   </div>
+  @if (showSearch()) {
+  <div class="flex items-center gap-2 mt-1">
+    <input
+      type="text"
+      class="input input-bordered input-sm w-full"
+      placeholder="Search courses..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="searchTerm.set($event)"
+    />
+    @if (searchTerm()) {
+    <icon-cross classes="w-5 h-5 cursor-pointer" (click)="clearSearch()" />
+    }
+  </div>
+  }
+  <div class="flex flex-col gap-2 mt-4">
+    @for (courseName of filteredCourseNames(); track $index) {
+    <div>
+      <div
+        class="group flex justify-between gap-3 items-center hover:cursor-pointer p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-neutral-500 font-cinzel"
+        [class]="
+          courseService.selectedCourseId() === $index
+            ? 'bg-base-100 border-neutral-500'
+            : ''
+        "
+        (click)="setCourse($index)"
+      >
+        <div class="flex-1 min-w-0">
+          @if (editingCourseId() !== $index) {
+          <div class="text-sm truncate">
+            {{ courseName }}
+          </div>
+          } @else {
+          <input
+            type="text"
+            class="text-sm input input-bordered focus:outline-none rounded-md h-5 px-2 w-full"
+            [(ngModel)]="editedCourseName"
+          />
+          }
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          @if (editingCourseId() !== $index) {
+          <div class="flex items-center gap-2">
+            <div
+              class="tooltip tooltip-top tooltip-accent font-sans"
+              data-tip="Edit"
+            >
+              <icon-pencil
+                classes="w-4 h-4 cursor-pointer text-secondary"
+                (click)="startEditing($index)"
+              />
+            </div>
+            <div
+              class="tooltip tooltip-top tooltip-accent font-sans"
+              data-tip="Delete"
+            >
+              <icon-trash
+                classes="w-4 h-4 cursor-pointer text-secondary hover:text-red-500 transition-all duration-300"
+                (click)="deleteCourse($index)"
+              />
+            </div>
+          </div>
+          } @else {
+          <div class="flex items-center gap-2">
+            <icon-check
+              classes="w-4 h-4 cursor-pointer"
+              (click)="saveEdit($index)"
+            />
+            <icon-cross
+              class="w-4 h-4 cursor-pointer"
+              (click)="cancelEdit(); $event.stopPropagation()"
+            />
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  }
 </div>

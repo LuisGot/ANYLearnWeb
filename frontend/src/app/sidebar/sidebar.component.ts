@@ -1,20 +1,38 @@
 import { Component, inject, effect, signal, computed } from '@angular/core';
-import { CourseService } from '../shared/course.service';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { CourseService } from '../shared/course.service';
+import { SidebarService } from '../shared/sidebar.service';
+import { TrashIconComponent } from '../../../public/icons/trash/trash-icon.component';
+import { PencilIconComponent } from '../../../public/icons/pencil/pencil-icon.component';
+import { NewIconComponent } from '../../../public/icons/new/new-icon.component';
+import { SearchIconComponent } from '../../../public/icons/search/search-icon.component';
+import { SidebarIcon } from '../../../public/icons/sidebar/sidebar-icon.component';
+import { CrossIconComponent } from '../../../public/icons/cross/cross-icon.component';
+import { CheckIconComponent } from '../../../public/icons/check/check-icon.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TrashIconComponent,
+    PencilIconComponent,
+    NewIconComponent,
+    SearchIconComponent,
+    SidebarIcon,
+    CrossIconComponent,
+    CheckIconComponent,
+  ],
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {
+  sidebarService = inject(SidebarService);
   courseService = inject(CourseService);
   private router = inject(Router);
-
-  courseNames = this.courseService.courseNames;
 
   editingCourseId = signal<number | null>(null);
   editedCourseName: string = '';
@@ -68,7 +86,7 @@ export class SidebarComponent {
 
   startEditing(id: number) {
     this.editingCourseId.set(id);
-    this.editedCourseName = this.courseNames()[id];
+    this.editedCourseName = this.courseService.courseNames()[id];
   }
 
   saveEdit(id: number) {

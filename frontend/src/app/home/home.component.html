@@ -1,11 +1,10 @@
 <div
-  class="relative flex w-full items-center justify-center h-screen bg-[url('/images/home/gradient-bg-comp.webp')] bg-cover bg-center"
+  class="relative flex w-full items-center justify-center h-full bg-base-100"
 >
-  <div class="absolute inset-0 bg-black/25 pointer-events-none"></div>
   <div class="z-10">
     <div class="flex flex-col items-center gap-7 pb-24">
       <h1
-        class="text-secondary text-9xl text-center font-cinzel-decorative font-normal"
+        class="text-secondary text-9xl text-center font-cinzel-decorative font-normal select-none"
       >
         Learn. Fast.
       </h1>
@@ -18,7 +17,7 @@
           placeholder="What do you want to learn?"
           onclick="create.showModal()"
         />
-        <img src="/icons/light.svg" alt="light" class="w-8 h-8" />
+        <icon-new class="w-8 h-8" />
       </label>
     </div>
     <app-create />
