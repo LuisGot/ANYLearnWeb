@@ -2,51 +2,55 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
-import requests
+import httpx
 import json
+import asyncio
+from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
 
 load_dotenv()
 
 app = FastAPI()
-
-
-origins = [
-    "http://localhost:4000",
-    "http://localhost:4200",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["http://localhost:4000", "http://localhost:4200"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-api_key = os.getenv("API_KEY")
-provider_url = os.getenv("PROVIDER_URL")
-llm_model = os.getenv("LLM_MODEL")
+API_KEY = os.getenv("API_KEY")
+PROVIDER_URL = os.getenv("PROVIDER_URL")
+LLM_MODEL = os.getenv("LLM_MODEL")
 
+semaphore = asyncio.Semaphore(4)
 
-def llm_request(prompt: str):
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
-    data = {
-        "model": llm_model,
-        "messages": [{"role": "user", "content": prompt}],
-    }
-    
-    try:
-        response = requests.post(provider_url, headers=headers, json=data)
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
-    except requests.exceptions.RequestException as e:
-        raise HTTPException(status_code=502, detail=f"LLM provider error: {str(e)}")
+class RateLimitException(HTTPException):
+    def __init__(self, detail="Rate limit exceeded. Retrying..."):
+        super().__init__(status_code=502, detail=detail)
 
+@retry(
+    reraise=True,
+    retry=retry_if_exception_type(RateLimitException),
+    wait=wait_exponential(multiplier=1, min=1, max=4),
+    stop=stop_after_attempt(3),
+)
+async def llm_request(prompt: str):
+    headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
+    data = {"model": LLM_MODEL, "messages": [{"role": "user", "content": prompt}]}
+    async with semaphore:
+        async with httpx.AsyncClient(timeout=60) as client:
+            try:
+                response = await client.post(PROVIDER_URL, headers=headers, json=data)
+                response.raise_for_status()
+                return response.json()["choices"][0]["message"]["content"]
+            except httpx.HTTPStatusError as e:
+                if e.response.status_code == 429:
+                    raise RateLimitException()
+                raise HTTPException(status_code=502, detail=f"LLM provider HTTP error: {e}")
+            except httpx.RequestError as e:
+                raise HTTPException(status_code=502, detail=f"LLM provider request error: {e}")
 
-def generate_subtopics(formdata: dict):
+async def generate_subtopics(formdata: dict):
     SUBTOPICS_PROMPT = """
         ## Introduction  
         - **YOU ARE** an **AI COURSE OUTLINE SPECIALIST** designed to generate comprehensive course outlines based on user input.  
@@ -92,7 +96,7 @@ def generate_subtopics(formdata: dict):
         - Logical progression of topics is key to effective knowledge transfer.
 
         ## User Input:
-        """
+    """
     prompt = f"""
     {SUBTOPICS_PROMPT}
     ### Topic:
@@ -104,10 +108,10 @@ def generate_subtopics(formdata: dict):
     ### Background:
     {formdata['background']}
     """
-    return llm_request(prompt)
+    response = await llm_request(prompt)
+    return json.loads(response)
 
-
-def generate_course(maintopic: str, subtopics: dict, subtopic: str):
+async def generate_course(maintopic: str, subtopics: dict, subtopic: str):
     COURSE_PROMPT = """
         ## Course Subtopic Content Creation
 
@@ -157,7 +161,6 @@ def generate_course(maintopic: str, subtopics: dict, subtopic: str):
 
         ## User Input:
     """
-
     prompt = f"""
         {COURSE_PROMPT}
         ### Maintopic:
@@ -169,26 +172,20 @@ def generate_course(maintopic: str, subtopics: dict, subtopic: str):
         ### Subtopic:
         {subtopic}
     """
-
-    course = llm_request(prompt)
-    return {
-        "subtopic": subtopic,
-        "content": course
-    }
-
+    content = await llm_request(prompt)
+    return {"subtopic": subtopic, "content": content}
 
 @app.post("/generate/course")
-def generate(formdata: dict):
+async def generate(formdata: dict):
     try:
-        subtopics = json.loads(generate_subtopics(formdata))
-        results = []
-        for subtopic in subtopics['subtopics']:
-            results.append(generate_course(formdata['topic'], subtopics, subtopic))
-        return results
+        subtopics = await generate_subtopics(formdata)
+        if "subtopics" not in subtopics or not isinstance(subtopics["subtopics"], list):
+            raise HTTPException(status_code=500, detail="Invalid response format.")
+        tasks = [generate_course(formdata["topic"], subtopics, s) for s in subtopics["subtopics"]]
+        return await asyncio.gather(*tasks)
+    except RateLimitException:
+        raise HTTPException(status_code=502, detail="Rate limit exceeded. Please try later.")
     except HTTPException as http_exc:
         raise http_exc
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"An unexpected error occurred: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
