@@ -1,4 +1,6 @@
+<app-recommendations (recommendation)="applyRecommendation($event)" />
 <dialog
+  #createModal
   id="create"
   class="modal"
   [class]="sidebarService.isOpen() ? 'pl-72' : ''"

@@ -1,14 +1,25 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CourseService } from '../../shared/course.service';
 import { ErrorService } from '../../shared/error.service';
 import { SidebarService } from '../../shared/sidebar.service';
+import {
+  Recommendation,
+  RecommendationsComponent,
+} from '../reccomendations/recommendations.component';
 
 @Component({
   selector: 'app-create',
-  imports: [FormsModule],
+  imports: [FormsModule, RecommendationsComponent],
   templateUrl: './create.component.html',
 })
 export class CreateComponent {
@@ -27,6 +38,8 @@ export class CreateComponent {
   courseService = inject(CourseService);
   errorService = inject(ErrorService);
   sidebarService = inject(SidebarService);
+
+  createModal = viewChild<ElementRef>('createModal');
 
   onSubmit() {
     this.courseService.isLoading.set(true);
@@ -50,5 +63,16 @@ export class CreateComponent {
       this.router.navigate(['/course']);
     }
     this.courseService.isLoading.set(false);
+  }
+
+  showModal() {
+    this.createModal()?.nativeElement.showModal();
+  }
+
+  applyRecommendation(recommendation: Recommendation) {
+    this.showModal();
+    this.topic.set(recommendation.topic);
+    this.goal.set(recommendation.description);
+    this.background.set(recommendation.background);
   }
 }
