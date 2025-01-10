@@ -61,16 +61,17 @@ export class CreateComponent {
   }
 
   handleResponse(response: any) {
+    this.courseService.isLoading.set(false);
     if (response?.subtopics) {
       this.courseService.currentSubtopics.set(response.subtopics);
       this.courseService.currentTopic.set(this.topic());
+      this.courseService.startNewCourse(this.topic(), response.subtopics);
       this.router.navigate(['/course']);
     } else {
       this.errorService.showError(
         'Invalid response format from subtopics endpoint.'
       );
     }
-    this.courseService.isLoading.set(false);
   }
 
   showModal() {
