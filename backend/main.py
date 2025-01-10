@@ -2,10 +2,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
-import httpx
 import json
-import asyncio
-from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
+import requests
 
 load_dotenv()
 
@@ -22,35 +20,26 @@ API_KEY = os.getenv("API_KEY")
 PROVIDER_URL = os.getenv("PROVIDER_URL")
 LLM_MODEL = os.getenv("LLM_MODEL")
 
-semaphore = asyncio.Semaphore(4)
 
-class RateLimitException(HTTPException):
-    def __init__(self, detail="Rate limit exceeded. Retrying..."):
-        super().__init__(status_code=502, detail=detail)
+def llm_request(prompt: str) -> str:
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json",
+    }
+    data = {
+        "model": LLM_MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+    }
 
-@retry(
-    reraise=True,
-    retry=retry_if_exception_type(RateLimitException),
-    wait=wait_exponential(multiplier=1, min=1, max=4),
-    stop=stop_after_attempt(3),
-)
-async def llm_request(prompt: str):
-    headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
-    data = {"model": LLM_MODEL, "messages": [{"role": "user", "content": prompt}]}
-    async with semaphore:
-        async with httpx.AsyncClient(timeout=60) as client:
-            try:
-                response = await client.post(PROVIDER_URL, headers=headers, json=data)
-                response.raise_for_status()
-                return response.json()["choices"][0]["message"]["content"]
-            except httpx.HTTPStatusError as e:
-                if e.response.status_code == 429:
-                    raise RateLimitException()
-                raise HTTPException(status_code=502, detail=f"LLM provider HTTP error: {e}")
-            except httpx.RequestError as e:
-                raise HTTPException(status_code=502, detail=f"LLM provider request error: {e}")
+    try:
+        response = requests.post(PROVIDER_URL, headers=headers, json=data, timeout=120)
+        response.raise_for_status()
+        return response.json()["choices"][0]["message"]["content"]
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=502, detail=f"LLM provider error: {str(e)}")
 
-async def generate_subtopics(formdata: dict):
+
+def generate_subtopics(formdata: dict):
     SUBTOPICS_PROMPT = """
         ## Introduction  
         - **YOU ARE** an **AI COURSE OUTLINE SPECIALIST** designed to generate comprehensive course outlines based on user input.  
@@ -108,10 +97,12 @@ async def generate_subtopics(formdata: dict):
     ### Background:
     {formdata['background']}
     """
-    response = await llm_request(prompt)
+
+    response = llm_request(prompt)
     return json.loads(response)
 
-async def generate_course(maintopic: str, subtopics: dict, subtopic: str):
+
+def generate_content(maintopic: str, subtopics: list, subtopic: str):
     COURSE_PROMPT = """
         ## Course Subtopic Content Creation
 
@@ -161,6 +152,7 @@ async def generate_course(maintopic: str, subtopics: dict, subtopic: str):
 
         ## User Input:
     """
+
     prompt = f"""
         {COURSE_PROMPT}
         ### Maintopic:
@@ -172,19 +164,31 @@ async def generate_course(maintopic: str, subtopics: dict, subtopic: str):
         ### Subtopic:
         {subtopic}
     """
-    content = await llm_request(prompt)
+    content = llm_request(prompt)
     return {"subtopic": subtopic, "content": content}
 
-@app.post("/generate/course")
-async def generate(formdata: dict):
+
+@app.post("/generate/subtopics")
+def generate_subtopics_endpoint(formdata: dict):
     try:
-        subtopics = await generate_subtopics(formdata)
+        subtopics = generate_subtopics(formdata)
         if "subtopics" not in subtopics or not isinstance(subtopics["subtopics"], list):
             raise HTTPException(status_code=500, detail="Invalid response format.")
-        tasks = [generate_course(formdata["topic"], subtopics, s) for s in subtopics["subtopics"]]
-        return await asyncio.gather(*tasks)
-    except RateLimitException:
-        raise HTTPException(status_code=502, detail="Rate limit exceeded. Please try later.")
+        return subtopics
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
+@app.post("/generate/content")
+def generate_content_endpoint(formdata: dict):
+    try:
+        maintopic = formdata["maintopic"]
+        subtopics = formdata["subtopics"]
+        subtopic = formdata["subtopic"]
+        course_section = generate_content(maintopic, subtopics, subtopic)
+        return course_section
     except HTTPException as http_exc:
         raise http_exc
     except Exception as e:

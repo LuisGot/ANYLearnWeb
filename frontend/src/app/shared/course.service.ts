@@ -7,14 +7,14 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-interface CourseData {
-  courseName: string;
-  course: Course[];
-}
-
 interface Course {
   subtopic: string;
   content: string;
+}
+
+interface CourseData {
+  courseName: string;
+  course: Course[];
 }
 
 @Injectable({
@@ -29,6 +29,9 @@ export class CourseService {
   shouldRedirect = signal(false);
 
   selectedCourseId = signal<number | null>(null);
+
+  currentSubtopics = signal<string[]>([]);
+  currentTopic = signal<string>('');
 
   courseNames = computed(() =>
     this.courses().map((course) => course.courseName)
@@ -48,6 +51,7 @@ export class CourseService {
   }
 
   private loadCourses(): void {
+    if (!this.isBrowser()) return;
     const storedCourses = localStorage.getItem('courses');
     if (storedCourses) {
       try {
@@ -61,6 +65,7 @@ export class CourseService {
   }
 
   private saveCourses(): void {
+    if (!this.isBrowser()) return;
     localStorage.setItem('courses', JSON.stringify(this.courses()));
   }
 

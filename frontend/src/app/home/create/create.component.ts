@@ -7,7 +7,6 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CourseService } from '../../shared/course.service';
 import { ErrorService } from '../../shared/error.service';
@@ -16,6 +15,7 @@ import {
   Recommendation,
   RecommendationsComponent,
 } from '../reccomendations/recommendations.component';
+import { HttpService } from '../../shared/http.service';
 
 @Component({
   selector: 'app-create',
@@ -23,17 +23,7 @@ import {
   templateUrl: './create.component.html',
 })
 export class CreateComponent {
-  topic = signal('');
-  goal = signal('');
-  background = signal('');
-
-  formData = computed(() => ({
-    topic: this.topic(),
-    goal: this.goal(),
-    background: this.background(),
-  }));
-
-  http = inject(HttpClient);
+  httpService = inject(HttpService);
   router = inject(Router);
   courseService = inject(CourseService);
   errorService = inject(ErrorService);
@@ -41,26 +31,44 @@ export class CreateComponent {
 
   createModal = viewChild<ElementRef>('createModal');
 
+  topic = signal<string>('');
+  goal = signal<string>('');
+  background = signal<string>('');
+
+  formData = computed(() => ({
+    topic: this.topic(),
+    goal: this.goal(),
+    background: this.background(),
+  }));
+
   onSubmit() {
     this.courseService.isLoading.set(true);
-    this.http
-      .post('http://localhost:8000/generate/course', this.formData())
+
+    this.httpService
+      .post<{ subtopics: any }>(
+        'http://localhost:8000/generate/subtopics',
+        this.formData()
+      )
       .subscribe({
         next: (response) => this.handleResponse(response),
         error: () => {
           this.errorService.showError(
-            'An error occurred while generating the course.'
+            'An error occurred while generating subtopics.'
           );
           this.courseService.isLoading.set(false);
         },
       });
   }
 
-  private handleResponse(response: any) {
-    if (!response.error) {
-      this.courseService.addCourse(response, this.topic());
-      this.courseService.course.set(response);
+  handleResponse(response: any) {
+    if (response?.subtopics) {
+      this.courseService.currentSubtopics.set(response.subtopics);
+      this.courseService.currentTopic.set(this.topic());
       this.router.navigate(['/course']);
+    } else {
+      this.errorService.showError(
+        'Invalid response format from subtopics endpoint.'
+      );
     }
     this.courseService.isLoading.set(false);
   }
@@ -70,9 +78,9 @@ export class CreateComponent {
   }
 
   applyRecommendation(recommendation: Recommendation) {
-    this.showModal();
     this.topic.set(recommendation.topic);
     this.goal.set(recommendation.description);
     this.background.set(recommendation.background);
+    this.showModal();
   }
 }
