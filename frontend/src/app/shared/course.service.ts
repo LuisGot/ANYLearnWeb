@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpService } from './http.service';
-import { ErrorService } from './error.service';
+import { NotificationService } from './notification.service';
 
 interface Course {
   subtopic: string;
@@ -25,7 +25,7 @@ interface CourseData {
 export class CourseService {
   platformId = inject(PLATFORM_ID);
   httpService = inject(HttpService);
-  errorService = inject(ErrorService);
+  notificationService = inject(NotificationService);
 
   isLoading = signal(false);
   courses = signal<CourseData[]>([]);
@@ -149,7 +149,10 @@ export class CourseService {
         next: (response) => this.handleGenerationResponse(response),
         error: () => {
           this.generating.set(false);
-          this.errorService.showError('Failed to generate content.');
+          this.notificationService.showNotification(
+            'Failed to generate content.',
+            'error'
+          );
           this.saveCourses();
         },
       });
@@ -183,6 +186,10 @@ export class CourseService {
   finishGeneration(): void {
     this.generating.set(false);
     this.saveCourses();
+    this.notificationService.showNotification(
+      `Your course "${this.currentTopic()}" got generated!`,
+      'success'
+    );
   }
 
   isBrowser(): boolean {
@@ -197,7 +204,10 @@ export class CourseService {
         const parsedCourses: CourseData[] = JSON.parse(storedCourses);
         this.courses.set(parsedCourses);
       } catch (e) {
-        console.error('Failed to parse courses from localStorage', e);
+        this.notificationService.showNotification(
+          'Failed to parse courses from localStorage.',
+          'error'
+        );
         this.courses.set([]);
       }
     }

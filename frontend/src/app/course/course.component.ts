@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MarkdownComponent } from 'ngx-markdown';
 
 import { CourseService } from '../shared/course.service';
-import { ErrorService } from '../shared/error.service';
 
 @Component({
   selector: 'app-course',
@@ -13,7 +12,6 @@ import { ErrorService } from '../shared/error.service';
 })
 export class CourseComponent {
   courseService = inject(CourseService);
-  errorService = inject(ErrorService);
 
   isGenerating = computed(() => {
     return (

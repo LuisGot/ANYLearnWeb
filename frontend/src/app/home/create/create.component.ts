@@ -9,7 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CourseService } from '../../shared/course.service';
-import { ErrorService } from '../../shared/error.service';
+import { NotificationService } from '../../shared/notification.service';
 import { SidebarService } from '../../shared/sidebar.service';
 import {
   Recommendation,
@@ -26,7 +26,7 @@ export class CreateComponent {
   httpService = inject(HttpService);
   router = inject(Router);
   courseService = inject(CourseService);
-  errorService = inject(ErrorService);
+  notificationService = inject(NotificationService);
   sidebarService = inject(SidebarService);
 
   createModal = viewChild<ElementRef>('createModal');
@@ -52,8 +52,9 @@ export class CreateComponent {
       .subscribe({
         next: (response) => this.handleResponse(response),
         error: () => {
-          this.errorService.showError(
-            'An error occurred while generating subtopics.'
+          this.notificationService.showNotification(
+            'An error occurred while generating subtopics.',
+            'error'
           );
           this.courseService.isLoading.set(false);
         },
@@ -68,8 +69,9 @@ export class CreateComponent {
       this.courseService.startNewCourse(this.topic(), response.subtopics);
       this.router.navigate(['/course']);
     } else {
-      this.errorService.showError(
-        'Invalid response format from subtopics endpoint.'
+      this.notificationService.showNotification(
+        'Invalid response format from subtopics endpoint.',
+        'error'
       );
     }
   }
