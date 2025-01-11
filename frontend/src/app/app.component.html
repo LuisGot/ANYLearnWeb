@@ -16,26 +16,6 @@
     <app-sidebar />
   </div>
 </div>
-
-@if (notificationService.hasNotification()) {
-<div
-  role="alert"
-  class="alert fixed bottom-4 right-4 flex items-center gap-2 p-4 cursor-pointer w-[450px] z-[100]"
-  [class.alert-info]="notificationService.type() === 'info'"
-  [class.alert-success]="notificationService.type() === 'success'"
-  [class.alert-warning]="notificationService.type() === 'warning'"
-  [class.alert-error]="notificationService.type() === 'error'"
-  (click)="notificationService.clearNotification()"
->
-  @if (notificationService.type() === 'info') {
-  <icon-info classes="h-6 w-6 shrink-0" />
-  } @else if (notificationService.type() === 'success') {
-  <icon-check classes="h-6 w-6 shrink-0" />
-  } @else if (notificationService.type() === 'warning') {
-  <icon-warning classes="h-6 w-6 shrink-0" />
-  } @else if (notificationService.type() === 'error') {
-  <icon-cross classes="h-6 w-6 shrink-0" />
-  }
-  <span>{{ notificationService.message() }}</span>
+<div class="fixed bottom-4 right-4">
+  <app-notification />
 </div>
-}

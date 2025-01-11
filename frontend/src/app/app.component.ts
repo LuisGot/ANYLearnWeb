@@ -4,10 +4,7 @@ import { SidebarService } from './shared/sidebar.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { NotificationService } from './shared/notification.service';
 import { MenubarComponent } from './menubar/menubar.component';
-import { CrossIconComponent } from '../../public/icons/cross/cross-icon.component';
-import { CheckIconComponent } from '../../public/icons/check/check-icon.component';
-import { InfoiconComponent } from '../../public/icons/info/info-icon.component';
-import { WarningIconComponent } from '../../public/icons/warning/warning-icon.component';
+import { NotificationComponent } from './notification/notification.component';
 
 @Component({
   selector: 'app-root',
@@ -16,10 +13,7 @@ import { WarningIconComponent } from '../../public/icons/warning/warning-icon.co
     RouterOutlet,
     SidebarComponent,
     MenubarComponent,
-    InfoiconComponent,
-    CrossIconComponent,
-    CheckIconComponent,
-    WarningIconComponent,
+    NotificationComponent,
   ],
   templateUrl: './app.component.html',
 })
