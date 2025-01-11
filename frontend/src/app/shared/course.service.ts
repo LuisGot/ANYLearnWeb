@@ -4,6 +4,7 @@ import {
   PLATFORM_ID,
   signal,
   computed,
+  effect,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpService } from './http.service';
@@ -12,6 +13,7 @@ import { NotificationService } from './notification.service';
 interface Course {
   subtopic: string;
   content: string;
+  isNew?: boolean;
 }
 
 interface CourseData {
@@ -58,6 +60,17 @@ export class CourseService {
         this.setCourse(0);
       }
     }
+
+    effect(() => {
+      const selectedId = this.selectedCourseId();
+      if (
+        selectedId !== null &&
+        selectedId >= 0 &&
+        selectedId < this.courses().length
+      ) {
+        this.resetNewFlags(selectedId);
+      }
+    });
   }
 
   startNewCourse(topicName: string, subtopics: string[]): void {
@@ -172,6 +185,7 @@ export class CourseService {
         targetCourse.course.push({
           subtopic: response.subtopic,
           content: response.content,
+          isNew: true,
         });
 
         this.courses.set(allCourses);
@@ -216,5 +230,24 @@ export class CourseService {
   saveCourses(): void {
     if (!this.isBrowser()) return;
     localStorage.setItem('courses', JSON.stringify(this.courses()));
+  }
+
+  private resetNewFlags(courseId: number): void {
+    const allCourses = [...this.courses()];
+    const targetCourse = allCourses[courseId];
+
+    let hasChanges = false;
+
+    targetCourse.course.forEach((subtopic) => {
+      if (subtopic.isNew) {
+        subtopic.isNew = false;
+        hasChanges = true;
+      }
+    });
+
+    if (hasChanges) {
+      this.courses.set(allCourses);
+      this.saveCourses();
+    }
   }
 }

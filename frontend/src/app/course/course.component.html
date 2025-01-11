@@ -7,6 +7,7 @@
           <a
             href="/course#subtopic-{{ $index }}"
             class="block hover:bg-neutral p-2 rounded-lg transition-all duration-300 border border-base-100 hover:border-neutral-500"
+            [class]="isGenerating() ? 'animate-fadeInLeft' : ''"
           >
             <p class="m-0">{{ courseSection.subtopic }}</p>
           </a>
@@ -17,7 +18,11 @@
 
     <div class="h-full flex flex-col gap-12 w-full overflow-y-auto p-4">
       @for (courseSection of course(); track $index) {
-      <div class="flex flex-col gap-4" id="subtopic-{{ $index }}">
+      <div
+        class="flex flex-col gap-4"
+        id="subtopic-{{ $index }}"
+        [class]="isGenerating() ? 'animate-fadeInUp' : ''"
+      >
         <markdown
           [data]="courseSection.content"
           class="[&_h1]:text-4xl [&_h1]:font-bold [&_h1]:mb-6 [&_h1]:text-gray-100 [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:mb-4 [&_h2]:text-gray-200 [&_h3]:text-2xl [&_h3]:font-medium [&_h3]:mb-3 [&_h3]:text-gray-300 [&_p]:text-base [&_p]:leading-7 [&_p]:my-3 [&_p]:text-gray-300 [&_a]:text-blue-400 [&_a]:hover:text-blue-300 [&_a]:hover:underline [&_a]:transition-colors [&_ul]:list-disc [&_ul]:ml-8 [&_ul]:my-4 [&_ul]:text-gray-300 [&_ol]:list-decimal [&_ol]:ml-8 [&_ol]:my-4 [&_ol]:text-gray-300 [&_li]:mb-2 [&_li]:leading-7 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-600 [&_blockquote]:pl-6 [&_blockquote]:italic [&_blockquote]:text-gray-400 [&_blockquote]:my-6 [&_blockquote]:bg-gray-800/50 [&_blockquote]:py-2 [&_blockquote]:rounded-r [&_hr]:my-8 [&_hr]:border-gray-700 [&_table]:w-full [&_table]:border-collapse [&_table]:my-6 [&_table]:border [&_table]:border-gray-700 [&_th]:font-semibold [&_th]:p-3 [&_th]:bg-gray-800 [&_th]:text-gray-200 [&_th]:border [&_th]:border-gray-700 [&_td]:p-3 [&_td]:border [&_td]:border-gray-700 [&_td]:text-gray-300 [&_tr]:border-b [&_tr]:border-gray-700 [&_tr:hover]:bg-gray-800/50 [&_tr:last-child]:border-none"
