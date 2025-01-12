@@ -168,6 +168,74 @@ def generate_content(maintopic: str, subtopics: list, subtopic: str):
     return {"subtopic": subtopic, "content": content}
 
 
+def generate_recommendations(courses: dict):
+    RECOMMENDATIONS_PROMPT = """
+        ## Introduction  
+        - **YOU ARE** an **AI COURSE RECOMMENDATION SPECIALIST** designed to generate comprehensive course recommendations based on user input.  
+        (Context: "Your expertise ensures tailored course recommendations that align with the user's interests and learning style.")  
+
+        ## Task Description  
+        - **YOUR TASK IS** to **CREATE** a JSON-formatted course recommendation based on a list of courses provided by the user.  
+        - The user will provide:  
+        - **A list of courses** they already did.
+        - You will **create** a list of 4 **recommended courses** based on the user's already completed courses.
+
+        ## Rules and Constraints  
+        - **FOCUS** on the user’s **interests** and **already completed courses** when creating the recommended courses.
+        - **ENSURE** recommended courses are **unique** and avoid repetition.   
+        - **ADAPT** the language of the response to match the **language of the majority of courses**.
+        - **AVOID** any introductory or concluding text like "Here is your course recommendations on...".
+        - **CREATE** a maximum of 4 recommendations.
+        - **ENSURE** a detailed and extensive goal for each recommendation.
+        - **ENSURE** a short course topic for each recommendation with a maximum of 3 words.
+
+        ## Outcome Expectations  
+        - **PROVIDE** a JSON object containing a list of short categorized recommendations under the key **"recommendations"**.
+        - **DO NOT** put the JSON object in a code block. Just provide the JSON object as a string.
+        - **ENSURE** clarity and logical progression in the recommendation arrangement.
+
+        ## EXAMPLE of required response format:
+        {
+            "recommendations": [
+                {
+                    "topic": "How to do a backflip",
+                    "goal": "I want to learn how i can do a backflip to improve my fitness and confidence",
+                    "background": "Professional"
+                },
+                {
+                    "topic": "How to manage my personal finances",
+                    "goal": "I want to learn how to manage my personal finance and investments to live a comfortable life",
+                    "background": "Beginner"
+                },
+                {
+                    "topic": "Speaking in public",
+                    "goal": "Learn how to speak in public to maximize my career opportunities",
+                    "background": "Intermediate"
+                },
+                {
+                    "topic": "How to create a website",
+                    "goal": "Learn how to create a website to showcase my resume and projects",
+                    "background": "Beginner"
+                },
+            ]
+        }
+        
+        ### IMPORTANT:
+        - Your precision in recommending courses ensures a seamless learning experience.
+        - Logical recommendations of courses is key to effective learning.
+
+        ## User Input:
+    """
+    prompt = f"""
+    {RECOMMENDATIONS_PROMPT}
+    ### Courses:
+    {courses}
+    """
+
+    response = llm_request(prompt)
+    return json.loads(response)
+
+
 @app.post("/generate/subtopics")
 def generate_subtopics_endpoint(formdata: dict):
     try:
@@ -189,6 +257,19 @@ def generate_content_endpoint(formdata: dict):
         subtopic = formdata["subtopic"]
         course_section = generate_content(maintopic, subtopics, subtopic)
         return course_section
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
+@app.post("/generate/recommendations")
+def generate_recommendations_endpoint(courses: dict):
+    try:
+        recommendations = generate_recommendations(courses)
+        if "recommendations" not in recommendations or not isinstance(recommendations["recommendations"], list):
+            raise HTTPException(status_code=500, detail="Invalid response format.")
+        return recommendations
     except HTTPException as http_exc:
         raise http_exc
     except Exception as e:

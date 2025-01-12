@@ -1,8 +1,19 @@
-import { Component, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  PLATFORM_ID,
+  inject,
+  output,
+  signal,
+} from '@angular/core';
+import { HttpService } from '../../shared/http.service';
+import { CourseService } from '../../shared/course.service';
+import { isPlatformBrowser } from '@angular/common';
 
 export interface Recommendation {
   topic: string;
-  description: string;
+  goal: string;
   background: string;
 }
 
@@ -11,17 +22,46 @@ export interface Recommendation {
   imports: [],
   templateUrl: './recommendations.component.html',
 })
-export class RecommendationsComponent {
+export class RecommendationsComponent implements OnInit {
+  platformId = inject(PLATFORM_ID);
+  httpService = inject(HttpService);
+  courseService = inject(CourseService);
+
   recommendation = output<Recommendation>();
+  recommendations = signal<Recommendation[]>([]);
+
+  ngOnInit(): void {
+    this.generateRecommendations();
+  }
 
   applyRecommendation(index: number) {
     this.recommendation.emit(this.recommendations()[index]);
   }
 
-  recommendations = signal<Recommendation[]>([
-    { topic: 'Angular', description: 'Learn Angular', background: 'Beginner' },
-    { topic: 'React', description: 'Learn React', background: 'Beginner' },
-    { topic: 'Vue', description: 'Learn Vue', background: 'Beginner' },
-    { topic: 'Svelte', description: 'Learn Svelte', background: 'Beginner' },
-  ]);
+  generateRecommendations() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    const courses = this.courseService.courses();
+    const data = {
+      courses: courses.map((course) => ({
+        courseName: course.courseName,
+        subtopics: course.course.map((subtopic) => subtopic.subtopic),
+      })),
+    };
+
+    this.httpService
+      .post<{ recommendations: any }>(
+        'http://localhost:8000/generate/recommendations',
+        data
+      )
+      .subscribe({
+        next: (response) => {
+          this.recommendations.set(response.recommendations);
+        },
+        error: () => {
+          this.recommendations.set([]);
+        },
+      });
+  }
 }

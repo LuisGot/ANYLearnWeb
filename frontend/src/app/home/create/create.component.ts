@@ -82,7 +82,7 @@ export class CreateComponent {
 
   applyRecommendation(recommendation: Recommendation) {
     this.topic.set(recommendation.topic);
-    this.goal.set(recommendation.description);
+    this.goal.set(recommendation.goal);
     this.background.set(recommendation.background);
     this.showModal();
   }
