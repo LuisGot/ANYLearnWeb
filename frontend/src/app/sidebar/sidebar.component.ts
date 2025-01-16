@@ -1,4 +1,4 @@
-import { Component, inject, effect, signal, computed } from '@angular/core';
+import { Component, inject, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -37,19 +37,6 @@ export class SidebarComponent {
   editingCourseId = signal<number | null>(null);
   editedCourseName: string = '';
 
-  showSearch = signal(false);
-  searchTerm = signal('');
-
-  filteredCourseNames = computed(() => {
-    const term = this.searchTerm().trim().toLowerCase();
-    if (!term) {
-      return this.courseService.courseNames();
-    }
-    return this.courseService
-      .courseNames()
-      .filter((c) => c.toLowerCase().includes(term));
-  });
-
   constructor() {
     effect(() => {
       if (this.courseService.shouldRedirect()) {
@@ -57,19 +44,6 @@ export class SidebarComponent {
         this.router.navigate(['']);
       }
     });
-  }
-
-  toggleSearch() {
-    if (this.showSearch()) {
-      this.searchTerm.set('');
-      this.showSearch.set(false);
-      return;
-    }
-    this.showSearch.set(true);
-  }
-
-  clearSearch() {
-    this.searchTerm.set('');
   }
 
   setCourse(id: number) {
@@ -101,10 +75,5 @@ export class SidebarComponent {
   cancelEdit() {
     this.editingCourseId.set(null);
     this.editedCourseName = '';
-  }
-
-  learnNew() {
-    this.courseService.selectedCourseId.set(null);
-    this.router.navigate(['']);
   }
 }
