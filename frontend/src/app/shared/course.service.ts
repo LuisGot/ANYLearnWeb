@@ -232,6 +232,14 @@ export class CourseService {
     localStorage.setItem('courses', JSON.stringify(this.courses()));
   }
 
+  getCurrentCourse(): CourseData | null {
+    const id = this.selectedCourseId();
+    if (id === null || id < 0 || id >= this.courses().length) {
+      return null;
+    }
+    return this.courses()[id];
+  }
+
   private resetNewFlags(courseId: number): void {
     const allCourses = [...this.courses()];
     const targetCourse = allCourses[courseId];
