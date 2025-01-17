@@ -1,10 +1,10 @@
 <div class="flex h-screen">
   <div
-    class="flex flex-col w-full h-screen overflow-y-auto transition-all duration-500 ease-in-out"
+    class="flex flex-col w-full overflow-hidden transition-all duration-500 ease-in-out"
     [class]="sidebarService.isOpen() ? 'ml-72' : ''"
   >
-    <app-menubar />
-    <div class="flex-1 overflow-y-auto">
+    <app-menubar class="flex-shrink-0" />
+    <div class="flex-1 overflow-hidden">
       <router-outlet></router-outlet>
     </div>
   </div>
