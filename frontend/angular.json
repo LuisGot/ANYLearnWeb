@@ -35,7 +35,8 @@
               "node_modules/prismjs/components/prism-typescript.min.js",
               "node_modules/prismjs/components/prism-c.min.js",
               "node_modules/prismjs/components/prism-cpp.min.js",
-              "node_modules/prismjs/components/prism-php.min.js"
+              "node_modules/prismjs/components/prism-php.min.js",
+              "node_modules/clipboard/dist/clipboard.min.js"
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -104,7 +105,8 @@
               "node_modules/prismjs/components/prism-typescript.min.js",
               "node_modules/prismjs/components/prism-c.min.js",
               "node_modules/prismjs/components/prism-cpp.min.js",
-              "node_modules/prismjs/components/prism-php.min.js"
+              "node_modules/prismjs/components/prism-php.min.js",
+              "node_modules/clipboard/dist/clipboard.min.js"
             ]
           }
         }

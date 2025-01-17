@@ -1,5 +1,10 @@
 @import "./fonts.css";
 @import "./prism-atom-dark.css";
+
 @tailwind base;
 @tailwind components;
-@tailwind utilities; /* You can add global styles to this file, and also import other style files */
+@tailwind utilities;
+
+.markdown-clipboard-toolbar {
+  padding-right: 5px;
+}
