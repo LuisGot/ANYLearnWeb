@@ -16,7 +16,7 @@
       <div
         class="tooltip tooltip-left tooltip-accent"
         data-tip="Search"
-        (click)="this.sidebarService.toggleSearch()"
+        (click)="this.searchService.show()"
       >
         <button
           class="btn btn-neutral btn-square min-h-10 min-w-10 max-h-10 max-w-10 w-full"
@@ -37,26 +37,8 @@
       </div>
     </div>
   </div>
-  @if (this.sidebarService.showSearch()) {
-  <div class="flex items-center gap-2 mt-1">
-    <input
-      type="text"
-      class="input input-bordered input-sm w-full"
-      placeholder="Search courses..."
-      [(ngModel)]="this.sidebarService.searchTerm"
-      (ngModelChange)="this.sidebarService.searchTerm.set($event)"
-    />
-    @if (this.sidebarService.searchTerm()) {
-    <icon-cross
-      classes="w-5 h-5 cursor-pointer"
-      (click)="this.sidebarService.clearSearch()"
-    />
-    }
-  </div>
-  }
   <div class="flex flex-col gap-2 mt-4">
-    @for (courseName of this.sidebarService.filteredCourseNames(); track $index)
-    {
+    @for (courseName of courseService.courseNames(); track $index) {
     <div>
       <div
         class="group flex justify-between gap-3 items-center hover:cursor-pointer p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-neutral-500 font-cinzel"

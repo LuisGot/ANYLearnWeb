@@ -1,0 +1,95 @@
+<div
+  class="fixed inset-0 z-50 flex items-start justify-center p-4 transition-opacity duration-150"
+  [class]="isClosing() ? 'opacity-0' : 'opacity-100'"
+>
+  <div
+    class="absolute inset-0 bg-black/60 transition-opacity duration-150"
+    [class]="isClosing() ? 'opacity-0' : 'opacity-100'"
+    (click)="closeWithAnimation()"
+  ></div>
+  <div
+    class="relative w-full max-w-xl mt-20 transition-all duration-150"
+    [class]="
+      isClosing() ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
+    "
+    (click)="$event.stopPropagation()"
+  >
+    <div class="bg-base-100 rounded-xl shadow-2xl p-6">
+      <div class="relative">
+        <icon-search
+          classes="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-neutral-content/50"
+        />
+        <input
+          #searchInput
+          type="text"
+          class="input input-lg w-full pl-12 pr-4 bg-base-200 border-0 focus:outline-none transition-colors"
+          placeholder="Search courses..."
+          [ngModel]="searchService.searchTerm()"
+          (ngModelChange)="searchService.updateSearch($event)"
+        />
+        @if (searchService.searchTerm()) {
+        <button
+          class="absolute right-4 top-1/2 -translate-y-1/2 btn btn-ghost btn-sm btn-circle transition-all duration-300"
+          (click)="searchService.updateSearch('')"
+        >
+          <icon-cross classes="w-4 h-4" />
+        </button>
+        }
+      </div>
+      <div class="mt-4 min-h-[200px]">
+        @if (!courseService.courseNames().length) {
+        <div
+          class="flex flex-col items-center justify-center py-12 text-neutral-content/70 space-y-2"
+        >
+          <icon-search classes="w-12 h-12 opacity-20" />
+          <p>Generate a course to search for it</p>
+        </div>
+        } @else {
+        <div class="space-y-0.5">
+          @for (course of searchService.filteredCourses(); track $index) {
+          <div
+            class="px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-3 group"
+            [class]="
+              isSelected($index)
+                ? 'bg-secondary/10 hover:bg-secondary/20'
+                : 'hover:bg-base-200'
+            "
+            (click)="searchService.selectCourse($index)"
+            (mouseenter)="selectedIndex.set($index)"
+          >
+            <icon-notes
+              [classes]="
+                'w-4 h-4 transition-colors ' +
+                (isSelected($index)
+                  ? 'text-secondary/70'
+                  : 'text-neutral-content/30 group-hover:text-secondary/70')
+              "
+            />
+            <span class="text-base">{{ course }}</span>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      <div
+        class="mt-4 pt-3 border-t border-base-300/10 flex items-center justify-between text-xs text-neutral-content/50"
+      >
+        <div class="flex items-center gap-4">
+          <span class="flex items-center gap-1">
+            <kbd class="kbd kbd-sm">↵</kbd>
+            <span>to select</span>
+          </span>
+          <span class="flex items-center gap-1">
+            <kbd class="kbd kbd-sm">↑</kbd>
+            <kbd class="kbd kbd-sm">↓</kbd>
+            <span>to navigate</span>
+          </span>
+        </div>
+        <span class="flex items-center gap-1">
+          <kbd class="kbd kbd-sm">esc</kbd>
+          <span>to close</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

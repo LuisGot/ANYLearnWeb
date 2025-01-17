@@ -12,6 +12,7 @@ import { SearchIconComponent } from '../../../public/icons/search/search-icon.co
 import { SidebarIcon } from '../../../public/icons/sidebar/sidebar-icon.component';
 import { CrossIconComponent } from '../../../public/icons/cross/cross-icon.component';
 import { CheckIconComponent } from '../../../public/icons/check/check-icon.component';
+import { SearchService } from '../shared/search.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -32,6 +33,7 @@ import { CheckIconComponent } from '../../../public/icons/check/check-icon.compo
 export class SidebarComponent {
   sidebarService = inject(SidebarService);
   courseService = inject(CourseService);
+  searchService = inject(SearchService);
   private router = inject(Router);
 
   editingCourseId = signal<number | null>(null);

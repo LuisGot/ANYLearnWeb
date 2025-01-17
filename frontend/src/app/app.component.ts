@@ -6,6 +6,8 @@ import { NotificationService } from './shared/notification.service';
 import { MenubarComponent } from './menubar/menubar.component';
 import { NotificationComponent } from './notification/notification.component';
 import { ShortcutService } from './shared/shortcut.service';
+import { SearchComponent } from './search/search.component';
+import { SearchService } from './shared/search.service';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +17,7 @@ import { ShortcutService } from './shared/shortcut.service';
     SidebarComponent,
     MenubarComponent,
     NotificationComponent,
+    SearchComponent,
   ],
   templateUrl: './app.component.html',
 })
@@ -22,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
   sidebarService = inject(SidebarService);
   notificationService = inject(NotificationService);
   shortcutService = inject(ShortcutService);
+  searchService = inject(SearchService);
 
   ngOnInit(): void {
     this.shortcutService.startListening();
@@ -31,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.shortcutService.registerShortcut('ctrl+k', () => {
-      this.sidebarService.toggleSearch();
+      this.searchService.toggle();
     });
 
     this.shortcutService.registerShortcut('ctrl+shift+o', () => {
