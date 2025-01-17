@@ -1,5 +1,5 @@
 <div class="h-full py-4 bg-neutral flex flex-col overflow-x-hidden">
-  <div class="flex justify-between items-center sticky top-0">
+  <div class="flex justify-between items-center sticky top-0 px-4">
     <div
       class="tooltip tooltip-right tooltip-accent"
       data-tip="Sidebar"
@@ -25,7 +25,7 @@
       </div>
       <div
         (click)="this.sidebarService.learnNew()"
-        class="tooltip tooltip-bottom tooltip-accent"
+        class="tooltip tooltip-left tooltip-accent"
         data-tip="Learn"
       >
         <button
@@ -74,7 +74,7 @@
             @if (editingCourseId() !== $index) {
             <div class="flex items-center gap-2">
               <div
-                class="tooltip tooltip-top tooltip-accent font-sans"
+                class="tooltip tooltip-left tooltip-accent font-sans"
                 data-tip="Edit"
               >
                 <icon-pencil
@@ -83,7 +83,7 @@
                 />
               </div>
               <div
-                class="tooltip tooltip-top tooltip-accent font-sans"
+                class="tooltip tooltip-left tooltip-accent font-sans"
                 data-tip="Delete"
               >
                 <icon-trash
