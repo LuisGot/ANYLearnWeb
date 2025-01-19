@@ -3,10 +3,19 @@ import { CourseService } from '../shared/course.service';
 import { NotificationService } from '../shared/notification.service';
 import { ExporticonComponent } from '../../../public/icons/export/export-icon.component';
 import { ImporticonComponent } from '../../../public/icons/import/import-icon.component';
+import { GithubIconComponent } from '../../../public/icons/github/github-icon.component';
+import { MailIconComponent } from '../../../public/icons/mail/mail-icon.component';
+import { DiscordIconComponent } from '../../../public/icons/discord/discord-icon.component';
 
 @Component({
   selector: 'app-settings',
-  imports: [ExporticonComponent, ImporticonComponent],
+  imports: [
+    ExporticonComponent,
+    ImporticonComponent,
+    GithubIconComponent,
+    MailIconComponent,
+    DiscordIconComponent,
+  ],
   templateUrl: './settings.component.html',
 })
 export class SettingsComponent {
