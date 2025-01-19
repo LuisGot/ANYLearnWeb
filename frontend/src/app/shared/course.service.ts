@@ -117,6 +117,43 @@ export class CourseService {
     }
   }
 
+  deleteAllCourses(): void {
+    this.courses.set([]);
+    this.saveCourses();
+  }
+
+  importCourses(jsonString: string): void {
+    try {
+      const coursesData = JSON.parse(jsonString);
+
+      if (
+        !Array.isArray(coursesData) ||
+        !coursesData.every(
+          (course) =>
+            typeof course === 'object' &&
+            course !== null &&
+            'courseName' in course &&
+            'course' in course &&
+            Array.isArray(course.course)
+        )
+      ) {
+        throw new Error('Invalid format');
+      }
+
+      this.courses.set(coursesData as CourseData[]);
+      this.saveCourses();
+      this.notificationService.showNotification(
+        'Courses imported successfully',
+        'success'
+      );
+    } catch {
+      this.notificationService.showNotification(
+        'Failed to import: Invalid course data',
+        'error'
+      );
+    }
+  }
+
   updateCourseName(id: number, newName: string): void {
     if (this.isBrowser() && id >= 0 && id < this.courses().length) {
       const updatedCourses = [...this.courses()];

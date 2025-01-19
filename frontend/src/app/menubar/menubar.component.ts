@@ -1,13 +1,19 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SidebarService } from '../shared/sidebar.service';
 import { SidebarIcon } from '../../../public/icons/sidebar/sidebar-icon.component';
-import { DownloadiconComponent } from '../../../public/icons/download/download-icon.component';
+import { ExporticonComponent } from '../../../public/icons/export/export-icon.component';
 import { CourseService } from '../shared/course.service';
+import { SettingsIconComponent } from '../../../public/icons/settings/settings-icon.component';
 
 @Component({
   selector: 'app-menubar',
-  imports: [SidebarIcon, DownloadiconComponent],
+  imports: [
+    SidebarIcon,
+    SettingsIconComponent,
+    RouterLink,
+    ExporticonComponent,
+  ],
   templateUrl: './menubar.component.html',
 })
 export class MenubarComponent {

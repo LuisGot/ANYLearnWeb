@@ -1,0 +1,79 @@
+<div class="p-6 max-w-4xl mx-auto space-y-8">
+  <section class="bg-neutral rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-4">Keyboard Shortcuts</h2>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex items-center justify-between p-3 bg-base-200 rounded-lg">
+        <span>Toggle Sidebar</span>
+        <div class="flex gap-1">
+          <kbd class="kbd kbd-sm">ctrl</kbd>
+          <kbd class="kbd kbd-sm">shift</kbd>
+          <kbd class="kbd kbd-sm">s</kbd>
+        </div>
+      </div>
+      <div class="flex items-center justify-between p-3 bg-base-200 rounded-lg">
+        <span>Quick Search</span>
+        <div class="flex gap-1">
+          <kbd class="kbd kbd-sm">ctrl</kbd>
+          <kbd class="kbd kbd-sm">k</kbd>
+        </div>
+      </div>
+      <div class="flex items-center justify-between p-3 bg-base-200 rounded-lg">
+        <span>Create New Course</span>
+        <div class="flex gap-1">
+          <kbd class="kbd kbd-sm">ctrl</kbd>
+          <kbd class="kbd kbd-sm">shift</kbd>
+          <kbd class="kbd kbd-sm">o</kbd>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="bg-neutral rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-4">Course Management</h2>
+    <div class="flex gap-4">
+      <button class="btn btn-secondary" (click)="exportAllCourses()">
+        <icon-export classes="w-5 h-5" />
+        Export All Courses
+      </button>
+      <button class="btn btn-secondary" (click)="importCourses()">
+        <icon-import classes="w-5 h-5" />
+        Import Courses
+      </button>
+    </div>
+  </section>
+  <section class="bg-neutral rounded-xl p-6">
+    <h2 class="text-2xl font-semibold mb-4">Contact & Links</h2>
+    <div class="flex gap-4">
+      <a href="mailto:developer@example.com" class="btn btn-secondary">
+        Contact Developer
+      </a>
+      <a
+        href="https://github.com/LuisGot/ANYLearnWeb"
+        target="_blank"
+        class="btn btn-secondary"
+      >
+        GitHub Repository
+      </a>
+    </div>
+  </section>
+  <section class="rounded-xl bg-neutral p-6 border-2 border-error/20">
+    <h2 class="text-2xl font-semibold mb-4 text-error">Danger Zone</h2>
+    <div class="flex items-center justify-between bg-base-200 p-4 rounded-lg">
+      <div>
+        <h3 class="font-medium">Delete All Courses</h3>
+        <p class="text-sm text-neutral-content/70">
+          This action cannot be undone.
+        </p>
+      </div>
+      <button class="btn btn-error" (click)="deleteAllCourses()">
+        Delete All Courses
+      </button>
+    </div>
+  </section>
+  <div class="text-sm text-secondary/30 text-center p-4 bg-base-100 rounded-xl">
+    <p>
+      Please note that AI-generated content may contain errors or be incomplete.
+      Always verify the information provided and use it as a learning aid rather
+      than a definitive source. Use your judgment when applying the content.
+    </p>
+  </div>
+</div>
