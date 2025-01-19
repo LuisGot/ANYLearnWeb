@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { SidebarService } from './shared/sidebar.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { NotificationService } from './shared/notification.service';
@@ -22,6 +22,7 @@ import { SearchService } from './shared/search.service';
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
+  router = inject(Router);
   sidebarService = inject(SidebarService);
   notificationService = inject(NotificationService);
   shortcutService = inject(ShortcutService);
@@ -40,6 +41,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.shortcutService.registerShortcut('ctrl+shift+o', () => {
       this.sidebarService.learnNew();
+    });
+
+    this.shortcutService.registerShortcut('ctrl+shift+i', () => {
+      this.router.navigate(['/settings']);
     });
   }
 
