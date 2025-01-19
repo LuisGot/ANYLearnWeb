@@ -5,7 +5,6 @@ module.exports = {
     extend: {
       fontFamily: {
         cinzel: ["Cinzel", "sans-serif"],
-        "cinzel-decorative": ["Cinzel Decorative", "sans-serif"],
       },
       keyframes: {
         fadeInUp: {

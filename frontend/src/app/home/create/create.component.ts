@@ -16,10 +16,11 @@ import {
   RecommendationsComponent,
 } from '../reccomendations/recommendations.component';
 import { HttpService } from '../../shared/http.service';
+import { CrossIconComponent } from '../../../../public/icons/cross/cross-icon.component';
 
 @Component({
   selector: 'app-create',
-  imports: [FormsModule, RecommendationsComponent],
+  imports: [FormsModule, RecommendationsComponent, CrossIconComponent],
   templateUrl: './create.component.html',
 })
 export class CreateComponent {

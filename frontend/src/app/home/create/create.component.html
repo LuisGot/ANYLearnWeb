@@ -5,61 +5,72 @@
   class="modal"
   [class]="sidebarService.isOpen() ? 'pl-72' : ''"
 >
-  <div class="modal-box">
+  <div class="modal-box bg-base-100 rounded-xl shadow-2xl p-6 relative">
     @if (courseService.isLoading() === true) {
     <div
-      class="bg-black/50 absolute inset-0 z-10 flex justify-center items-center"
+      class="bg-black/50 absolute inset-0 z-10 flex justify-center items-center rounded-xl"
     >
       <span class="loading loading-ring loading-lg"></span>
     </div>
     }
-    <h2 class="text-2xl font-semibold font-cinzel">CREATE NEW COURSE</h2>
+    <h2 class="text-2xl font-semibold mb-6">Create New Course</h2>
     <form class="flex flex-col gap-5">
       <div class="form-control">
         <label class="label">
-          <span class="label-text">Topic</span>
+          <span class="label-text text-secondary">Topic</span>
         </label>
-        <input
-          type="text"
-          class="input input-bordered text-sm"
-          [(ngModel)]="topic"
-          name="topic"
-        />
+        <div class="relative">
+          <input
+            type="text"
+            class="input input-lg w-full bg-base-200 border-0 focus:outline-none transition-colors text-sm"
+            [(ngModel)]="topic"
+            name="topic"
+            placeholder="Enter course topic..."
+          />
+        </div>
       </div>
+
       <div class="form-control">
         <label class="label">
-          <span class="label-text">Goal</span>
+          <span class="label-text text-secondary">Goal</span>
         </label>
         <textarea
-          class="textarea textarea-bordered"
+          class="textarea textarea-lg bg-base-200 border-0 focus:outline-none transition-colors text-sm min-h-[100px]"
           [(ngModel)]="goal"
           name="goal"
+          placeholder="What do you want to learn?"
         ></textarea>
       </div>
+
       <div class="form-control">
         <label class="label">
-          <span class="label-text">Background</span>
+          <span class="label-text text-secondary">Background</span>
         </label>
         <textarea
-          class="textarea textarea-bordered"
+          class="textarea textarea-lg bg-base-200 border-0 focus:outline-none transition-colors text-sm min-h-[100px]"
           [(ngModel)]="background"
           name="background"
+          placeholder="What's your current knowledge level?"
         ></textarea>
       </div>
-      <input
-        type="button"
-        name="submit"
-        class="btn btn-primary btn-sm w-fit self-end"
-        value="Learn"
-        (click)="onSubmit()"
-      />
-    </form>
-    <div class="absolute right-2 top-2">
-      <form method="dialog">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
+
+      <div
+        class="flex justify-end items-center mt-4 pt-3 border-t border-base-300/10"
+      >
+        <button
+          type="button"
+          class="btn btn-secondary btn-md"
+          (click)="onSubmit()"
+        >
+          Generate Course
         </button>
-      </form>
-    </div>
+      </div>
+    </form>
+
+    <form method="dialog" class="absolute right-4 top-4">
+      <button class="btn btn-sm btn-circle btn-ghost">
+        <icon-cross classes="w-4 h-4" />
+      </button>
+    </form>
   </div>
 </dialog>
