@@ -49,10 +49,10 @@
       } @else { @for (courseName of courseService.courseNames(); track $index) {
       <div>
         <div
-          class="group flex justify-between gap-3 items-center hover:cursor-pointer p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-neutral-500"
+          class="group flex justify-between gap-3 items-center hover:cursor-pointer p-2 rounded-lg transition-all duration-300 border border-transparent hover:border-neutral-700"
           [class]="
             courseService.selectedCourseId() === $index
-              ? 'bg-base-100 border-neutral-500'
+              ? 'bg-base-100 border-neutral-700'
               : ''
           "
           (click)="setCourse($index)"

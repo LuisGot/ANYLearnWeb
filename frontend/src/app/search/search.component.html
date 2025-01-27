@@ -14,7 +14,7 @@
     "
     (click)="$event.stopPropagation()"
   >
-    <div class="bg-base-100 rounded-xl shadow-2xl p-6">
+    <div class="bg-neutral rounded-xl shadow-2xl p-6">
       <div class="relative">
         <icon-search
           classes="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-neutral-content/50"
@@ -22,7 +22,7 @@
         <input
           #searchInput
           type="text"
-          class="input input-lg w-full pl-12 pr-4 bg-base-200 border-0 focus:outline-none transition-colors"
+          class="input input-lg w-full pl-12 pr-4 bg-base-100 border-0 focus:outline-none transition-colors"
           placeholder="Search courses..."
           [ngModel]="searchService.searchTerm()"
           (ngModelChange)="searchService.updateSearch($event)"
@@ -37,6 +37,23 @@
         }
       </div>
       <div class="mt-4 min-h-[200px]">
+        <div
+          class="px-4 py-3 rounded-lg cursor-pointer transition-all duration-300 flex items-center gap-3 group border border-transparent hover:border-neutral-700 mb-2"
+          [class]="isSelected(0) ? 'bg-base-100 ' : 'hover:bg-base-100'"
+          (click)="learnNew()"
+          (mouseenter)="selectedIndex.set(0)"
+        >
+          <icon-new
+            [classes]="
+              'w-4 h-4 transition-all duration-300 ' +
+              (isSelected(0)
+                ? 'text-secondary/70'
+                : 'text-neutral-content/30 group-hover:text-secondary/70')
+            "
+          />
+          <span class="text-base">New Course</span>
+        </div>
+        <hr class="border-neutral-700 my-4" />
         @if (!courseService.courseNames().length) {
         <div
           class="flex flex-col items-center justify-center py-12 text-neutral-content/70 space-y-2"
@@ -48,19 +65,17 @@
         <div class="space-y-0.5">
           @for (course of searchService.filteredCourses(); track $index) {
           <div
-            class="px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-3 group"
+            class="px-4 py-3 rounded-lg cursor-pointer transition-all duration-300 flex items-center gap-3 group border border-transparent hover:border-neutral-700"
             [class]="
-              isSelected($index)
-                ? 'bg-secondary/10 hover:bg-secondary/20'
-                : 'hover:bg-base-200'
+              isSelected($index + 1) ? 'bg-base-100 ' : 'hover:bg-base-100'
             "
             (click)="searchService.selectCourse($index)"
-            (mouseenter)="selectedIndex.set($index)"
+            (mouseenter)="selectedIndex.set($index + 1)"
           >
             <icon-notes
               [classes]="
-                'w-4 h-4 transition-colors ' +
-                (isSelected($index)
+                'w-4 h-4 transition-all duration-300 ' +
+                (isSelected($index + 1)
                   ? 'text-secondary/70'
                   : 'text-neutral-content/30 group-hover:text-secondary/70')
               "

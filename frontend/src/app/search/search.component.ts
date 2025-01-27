@@ -17,6 +17,8 @@ import { SearchService } from '../shared/search.service';
 import { CrossIconComponent } from '../../../public/icons/cross/cross-icon.component';
 import { SearchIconComponent } from '../../../public/icons/search/search-icon.component';
 import { NotesIconComponent } from '../../../public/icons/notes/notes-icon.component';
+import { NewIconComponent } from '../../../public/icons/new/new-icon.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -27,6 +29,7 @@ import { NotesIconComponent } from '../../../public/icons/notes/notes-icon.compo
     CrossIconComponent,
     SearchIconComponent,
     NotesIconComponent,
+    NewIconComponent,
   ],
   templateUrl: './search.component.html',
   host: {
@@ -39,6 +42,7 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
 
   courseService = inject(CourseService);
   searchService = inject(SearchService);
+  router = inject(Router);
 
   isClosing = signal(false);
   selectedIndex = signal(-1);
@@ -72,34 +76,30 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
   @HostListener('document:keydown.arrowdown', ['$event'])
   handleArrowDown(event: KeyboardEvent) {
     event.preventDefault();
-    if (this.searchService.filteredCourses().length > 0) {
-      this.selectedIndex.set(
-        (this.selectedIndex() + 1) % this.searchService.filteredCourses().length
-      );
-    }
+    const totalItems = this.searchService.filteredCourses().length + 1;
+    this.selectedIndex.set((this.selectedIndex() + 1) % totalItems);
   }
 
   @HostListener('document:keydown.arrowup', ['$event'])
   handleArrowUp(event: KeyboardEvent) {
     event.preventDefault();
-    if (this.searchService.filteredCourses().length > 0) {
-      this.selectedIndex.set(
-        (this.selectedIndex() -
-          1 +
-          this.searchService.filteredCourses().length) %
-          this.searchService.filteredCourses().length
-      );
-    }
+    const totalItems = this.searchService.filteredCourses().length + 1;
+    this.selectedIndex.set(
+      (this.selectedIndex() - 1 + totalItems) % totalItems
+    );
   }
 
   @HostListener('document:keydown.enter', ['$event'])
   handleEnter(event: KeyboardEvent) {
     event.preventDefault();
-    if (
-      this.selectedIndex() >= 0 &&
-      this.selectedIndex() < this.searchService.filteredCourses().length
+    const selectedIndex = this.selectedIndex();
+    if (selectedIndex === 0) {
+      this.learnNew();
+    } else if (
+      selectedIndex > 0 &&
+      selectedIndex <= this.searchService.filteredCourses().length
     ) {
-      this.searchService.selectCourse(this.selectedIndex());
+      this.searchService.selectCourse(selectedIndex - 1);
     }
   }
 
@@ -124,5 +124,11 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
 
   isSelected(index: number): boolean {
     return this.selectedIndex() === index;
+  }
+
+  learnNew() {
+    this.courseService.selectedCourseId.set(null);
+    this.router.navigate(['']);
+    this.closeWithAnimation();
   }
 }
