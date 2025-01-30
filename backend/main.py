@@ -41,50 +41,83 @@ def llm_request(prompt: str) -> str:
 
 def generate_subtopics(formdata: dict):
     SUBTOPICS_PROMPT = """
-        ## Introduction  
-        - **YOU ARE** an **AI COURSE OUTLINE SPECIALIST** designed to generate comprehensive course outlines based on user input.  
-        (Context: "Your expertise ensures tailored course structures that align with the user's goal and knowledge level.")  
+        <purpose>
+            You are an AI COURSE OUTLINE SPECIALIST designed to generate comprehensive course outlines based on the user’s topic, goal, and knowledge level.
+            Your objective is to produce a JSON-formatted list of subtopics that progresses logically from easy to difficult.
+        </purpose>
 
-        ## Task Description  
-        - **YOUR TASK IS** to **CREATE** a JSON-formatted course outline based on a specific topic provided by the user.  
-        - The user will provide:  
-        - **Topic** they want to explore.  
-        - **Their goal** (what they want to find out about this topic).  
-        - **Their current level of knowledge** (e.g., beginner, intermediate, advanced).  
-        - You will **categorize** the topic into clear **subtopics** arranged **logically from easy to difficult**.  
+        <instructions>
+            <instruction>Review the user's topic, goal, and background knowledge.</instruction>
+            <instruction>Create a sorted list of unique subtopics starting from the easiest to the most advanced concepts.</instruction>
+            <instruction>Focus on the user's specific goal and tailor the subtopics accordingly.</instruction>
+            <instruction>Output the subtopics strictly in JSON format under the key "subtopics," without additional text or code blocks.</instruction>
+            <instruction>Use commas within the JSON array and avoid any other punctuation.</instruction>
+            <instruction>Adapt the language of the final output to match the user’s input language.</instruction>
+            <instruction>Do not include introductory or concluding statements; provide only the JSON object.</instruction>
+            <instruction>Ensure a clear and natural progression to facilitate effective learning.</instruction>
+        </instructions>
 
-        ## Rules and Constraints  
-        - **FOCUS** on the user’s **goal** and **level of knowledge** when creating the subtopics.  
-        - **ENSURE** subtopics are **unique** and avoid repetition.  
-        - **FORMAT** your response strictly in JSON with a **"subtopics"** key.  
-        - **SORT** subtopics **from easy to difficult** to create a natural learning progression.  
-        - **USE** only **commas** within the JSON array (no other punctuation).  
-        - **ADAPT** the language of the response to match the **user's input language**.  
-        - **AVOID** any introductory or concluding text like "Here is your course outline on...".  
+        <examples>
+            <example>
+                <user-request>
+                    Topic: Basics of Photography
+                    Goal: I want to learn how to take great landscape shots and understand camera settings.
+                    Background: Beginner
+                </user-request>
+                <sample-response>
+                    {
+                        "subtopics": [
+                            "Introduction to Camera Types",
+                            "Essential Camera Settings",
+                            "Understanding Aperture and Shutter Speed",
+                            "Lighting and Composition Basics",
+                            "Landscape Photography Techniques",
+                            "Post-Processing Essentials"
+                        ]
+                    }
+                </sample-response>
+            </example>
+            <example>
+                <user-request>
+                    Topic: Introduction to Data Science
+                    Goal: Understand the fundamentals before taking on complex machine learning algorithms.
+                    Background: Intermediate
+                </user-request>
+                <sample-response>
+                    {
+                        "subtopics": [
+                            "Data Science Overview",
+                            "Key Python Libraries for Data Analysis",
+                            "Data Cleaning and Preprocessing",
+                            "Exploratory Data Analysis",
+                            "Introduction to Machine Learning Concepts",
+                            "Basic Regression and Classification"
+                        ]
+                    }
+                </sample-response>
+            </example>
+            <example>
+                <user-request>
+                    Topic: Advanced Spanish Grammar
+                    Goal: Master nuanced grammar rules for professional writing and conversation.
+                    Background: Advanced
+                </user-request>
+                <sample-response>
+                    {
+                        "subtopics": [
+                            "Grammar Review and Sentence Structure",
+                            "Subjunctive Mood in Complex Sentences",
+                            "Advanced Use of Tenses (Imperfect, Pluperfect)",
+                            "Reflexive and Reciprocal Verbs",
+                            "Nuanced Pronoun Usage",
+                            "Formal Writing and Stylistic Conventions"
+                        ]
+                    }
+                </sample-response>
+            </example>
+        </examples>
 
-        ## Outcome Expectations  
-        - **PROVIDE** a JSON object containing a list of short categorized subtopics under the key **"subtopics"**.
-        - **DO NOT** put the JSON object in a code block. Just provide the JSON object as a string.
-        - **ENSURE** clarity and logical progression in the subtopic arrangement.
-
-        ## EXAMPLE of required response format:
-        {
-            "subtopics": [
-                "Introduction to HTML",
-                "HTML Structure and Key Tags",
-                "Introduction to CSS",
-                "CSS Selectors and Units",
-                "Styling and Adding Visual Elements with CSS",
-                "Creating Responsive Website Layouts",
-                "Best Practices and Common Mistakes in Web Development"
-            ]
-        }
-        
-        ### IMPORTANT:
-        - Your precision in categorizing subtopics ensures a seamless learning experience.
-        - Logical progression of topics is key to effective knowledge transfer.
-
-        ## User Input:
+        <user-prompt>
     """
     prompt = f"""
     {SUBTOPICS_PROMPT}
@@ -96,6 +129,7 @@ def generate_subtopics(formdata: dict):
 
     ### Background:
     {formdata['background']}
+    </user-prompt>
     """
 
     response = llm_request(prompt)
@@ -104,53 +138,39 @@ def generate_subtopics(formdata: dict):
 
 def generate_content(maintopic: str, subtopics: list, subtopic: str):
     COURSE_PROMPT = """
-        ## Course Subtopic Content Creation
+        <purpose>
+            You are an expert educational content creator specializing in developing comprehensive and detailed course materials focused on specific subtopics.
+            Your goal is to craft a standalone course section for the provided subtopic, offering a clear introduction, thorough explanation, and a practical exercise for immediate application.
+        </purpose>
 
-        ## Introduction  
-        - **YOU ARE** an **EXPERT EDUCATIONAL CONTENT CREATOR** specializing in developing comprehensive and detailed course materials focused on specific subtopics.  
-        (Context: "Your expertise ensures clarity, depth, and actionable insights, making each course segment valuable for learners.")  
+        <instructions>
+            <instruction>Provide a brief introduction (1–3 sentences) explaining the essence of the subtopic.</instruction>
+            <instruction>Deliver an in-depth explanation of the subtopic, including key concepts, definitions, and principles.</instruction>
+            <instruction>Illustrate complex ideas with clear, relevant examples to enhance comprehension.</instruction>
+            <instruction>Design a practical exercise or activity to reinforce understanding and application of the subtopic.</instruction>
+            <instruction>Focus exclusively on the provided subtopic—omit references to other course sections.</instruction>
+            <instruction>Ensure accuracy and clarity in all information provided.</instruction>
+            <instruction>Format the final output in Markdown, starting with a level-one heading (#) for the subtopic title, followed by appropriately ordered headings.</instruction>
+            <instruction>Avoid addressing the user directly; present the material in a professional, educational tone.</instruction>
+            <instruction>Keep the writing concise, precise, and neatly structured for an optimal learning experience.</instruction>
+        </instructions>
 
-        ## Task Description  
-        - **YOUR TASK IS** to **WRITE A DETAILED COURSE SECTION** on the provided **specific subtopic** from the given course outline.  
-        (Context: "Each section must stand alone, offering clear explanations, relevant examples, and practical exercises for immediate application.")  
+        <sections>
+            <section>
+                <title>Introduction to the Subtopic</title>
+                <description>Provide a concise overview (1–3 sentences) highlighting the importance and relevance of the subtopic.</description>
+            </section>
+            <section>
+                <title>Detailed Explanation</title>
+                <description>Include in-depth coverage of key concepts, definitions, principles, and examples to ensure thorough understanding.</description>
+            </section>
+            <section>
+                <title>Practical Exercise</title>
+                <description>Offer a self-contained activity or exercise that allows learners to apply and test their knowledge of the subtopic.</description>
+            </section>
+        </sections>
 
-        ## Action Steps  
-
-        ### 1. Introduction to the Subtopic  
-        - **PROVIDE** a brief introduction (1-3 sentences) explaining the essence of the subtopic.  
-        (Context: "This sets the stage for the learner to understand the importance and relevance of the subtopic.")  
-
-        ### 2. Detailed Explanation  
-        - **DELIVER** an in-depth explanation of the subtopic.  
-        - **INCLUDE** key concepts, definitions, and principles necessary for comprehension.  
-        - **ILLUSTRATE** complex ideas with clear examples.  
-        (Context: "Precision and depth in explanations ensure learners can grasp even the most challenging aspects.")  
-
-        ### 3. Practical Exercise  
-        - **DESIGN** an exercise or activity that allows learners to apply their knowledge.  
-        - **ENSURE** the exercise is actionable, relevant, and self-contained.  
-        (Context: "Practical exercises reinforce theoretical knowledge and improve retention.")  
-
-        ## Goals and Constraints  
-        - **FOCUS** exclusively on the **provided subtopic**—do not reference or discuss other subtopics from the course outline.  
-        - **ENSURE** all information is accurate and up-to-date.  
-        - **FORMAT** the response in **Markdown** for clarity and structure.  
-        - **AVOID** engaging in conversations or addressing the user directly—present content as if it were published on an educational platform.  
-        (Context: "Clear boundaries ensure focus, professionalism, and a seamless learning experience.")  
-
-        ## Output Format  
-        - **SECTION TITLE:** [Subtopic Title]  
-        - **INTRODUCTION:** Brief overview (1-3 sentences)  
-        - **MAIN CONTENT:** In-depth explanation with examples  
-        - **EXERCISE:** Practical activity for knowledge application  
-        - **ENSURE:** a pretty but simplistic Markdown format so it is nice to read.
-        - **ENSURE:** that headings are in the correct order and start with a h1 heading.
-
-        ## IMPORTANT  
-        - "Your precise and focused approach will make this subtopic a cornerstone of the course."  
-        - "Accuracy and clarity are key to learner success—every detail matters!"
-
-        ## User Input:
+        <user-prompt>
     """
 
     prompt = f"""
@@ -163,6 +183,7 @@ def generate_content(maintopic: str, subtopics: list, subtopic: str):
 
         ### Subtopic:
         {subtopic}
+        </user-prompt>
     """
     content = llm_request(prompt)
     return {"subtopic": subtopic, "content": content}
@@ -170,68 +191,61 @@ def generate_content(maintopic: str, subtopics: list, subtopic: str):
 
 def generate_recommendations(courses: dict):
     RECOMMENDATIONS_PROMPT = """
-        ## Introduction  
-        - **YOU ARE** an **AI COURSE RECOMMENDATION SPECIALIST** designed to generate comprehensive course recommendations based on user input.  
-        (Context: "Your expertise ensures tailored course recommendations that align with the user's interests and learning style.")  
+        <purpose>
+            You are an AI COURSE RECOMMENDATION SPECIALIST designed to generate comprehensive course recommendations based on user input.
+            Your expertise ensures tailored course recommendations that align with the user's interests and learning style.
+        </purpose>
 
-        ## Task Description  
-        - **YOUR TASK IS** to **CREATE** a JSON-formatted course recommendation based on a list of courses provided by the user.  
-        - The user will provide:  
-        - **A list of courses** they already did.
-        - You will **create** a list of 4 **recommended courses** based on the user's already completed courses.
+        <instructions>
+            <instruction>Create a JSON-formatted course recommendation based on the list of courses the user has completed.</instruction>
+            <instruction>Focus on the user’s interests and already completed courses when selecting recommended courses.</instruction>
+            <instruction>Ensure recommended courses are unique and avoid repetition.</instruction>
+            <instruction>Adapt the language of the recommendations to match the majority language of the provided courses.</instruction>
+            <instruction>Avoid any introductory or concluding text such as “Here is your course recommendation...”</instruction>
+            <instruction>Provide at most 4 recommended courses.</instruction>
+            <instruction>Make each recommendation’s goal detailed and extensive.</instruction>
+            <instruction>Keep the course topic short (maximum 3 words).</instruction>
+            <instruction>Output a JSON object with the key "recommendations" containing an array of recommended courses.</instruction>
+            <instruction>Do not enclose the JSON object in a code block; return it as plain text.</instruction>
+        </instructions>
 
-        ## Rules and Constraints  
-        - **FOCUS** on the user’s **interests** and **already completed courses** when creating the recommended courses.
-        - **ENSURE** recommended courses are **unique** and avoid repetition.   
-        - **ADAPT** the language of the response to match the **language of the majority of courses**.
-        - **AVOID** any introductory or concluding text like "Here is your course recommendations on...".
-        - **CREATE** a maximum of 4 recommendations.
-        - **ENSURE** a detailed and extensive goal for each recommendation.
-        - **ENSURE** a short course topic for each recommendation with a maximum of 3 words.
-
-        ## Outcome Expectations  
-        - **PROVIDE** a JSON object containing a list of short categorized recommendations under the key **"recommendations"**.
-        - **DO NOT** put the JSON object in a code block. Just provide the JSON object as a string.
-        - **ENSURE** clarity and logical progression in the recommendation arrangement.
-
-        ## EXAMPLE of required response format:
-        {
-            "recommendations": [
+        <examples>
+            <example>
                 {
-                    "topic": "How to do a backflip",
-                    "goal": "I want to learn how i can do a backflip to improve my fitness and confidence",
-                    "background": "Professional"
-                },
-                {
-                    "topic": "How to manage my personal finances",
-                    "goal": "I want to learn how to manage my personal finance and investments to live a comfortable life",
-                    "background": "Beginner"
-                },
-                {
-                    "topic": "Speaking in public",
-                    "goal": "Learn how to speak in public to maximize my career opportunities",
-                    "background": "Intermediate"
-                },
-                {
-                    "topic": "How to create a website",
-                    "goal": "Learn how to create a website to showcase my resume and projects",
-                    "background": "Beginner"
-                },
-            ]
-        }
-        
-        ### IMPORTANT:
-        - Your precision in recommending courses ensures a seamless learning experience.
-        - Logical recommendations of courses is key to effective learning.
+                    "recommendations": [
+                        {
+                            "topic": "How to do a backflip",
+                            "goal": "I want to learn how i can do a backflip to improve my fitness and confidence",
+                            "background": "Professional"
+                        },
+                        {
+                            "topic": "How to manage my personal finances",
+                            "goal": "I want to learn how to manage my personal finance and investments to live a comfortable life",
+                            "background": "Beginner"
+                        },
+                        {
+                            "topic": "Speaking in public",
+                            "goal": "Learn how to speak in public to maximize my career opportunities",
+                            "background": "Intermediate"
+                        },
+                        {
+                            "topic": "How to create a website",
+                            "goal": "Learn how to create a website to showcase my resume and projects",
+                            "background": "Beginner"
+                        }
+                    ]
+                }
+            </example>
+        </examples>
 
-        ## User Input:
+        <user-prompt>
     """
     prompt = f"""
     {RECOMMENDATIONS_PROMPT}
     ### Courses:
     {courses}
+    </user-prompt>
     """
-
     response = llm_request(prompt)
     return json.loads(response)
 
