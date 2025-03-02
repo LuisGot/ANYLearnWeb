@@ -8,6 +8,7 @@ import { SettingsIconComponent } from '../../../public/icons/settings/settings-i
 
 @Component({
   selector: 'app-menubar',
+  standalone: true,
   imports: [
     SidebarIcon,
     SettingsIconComponent,

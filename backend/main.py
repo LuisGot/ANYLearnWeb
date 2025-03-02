@@ -51,9 +51,9 @@ def generate_subtopics(formdata: dict):
             <instruction>Create a sorted list of unique subtopics starting from the easiest to the most advanced concepts.</instruction>
             <instruction>Focus on the user's specific goal and tailor the subtopics accordingly.</instruction>
             <instruction>Output the subtopics strictly in JSON format under the key "subtopics," without additional text or code blocks.</instruction>
-            <instruction>Use commas within the JSON array and avoid any other punctuation.</instruction>
+            <instruction>Use commas within the JSON array and strings as values for the subtopics.</instruction>
             <instruction>Adapt the language of the final output to match the user’s input language.</instruction>
-            <instruction>Do not include introductory or concluding statements; provide only the JSON object.</instruction>
+            <instruction>Do not include introductory or concluding statements; provide only a correct JSON object.</instruction>
             <instruction>Ensure a clear and natural progression to facilitate effective learning.</instruction>
         </instructions>
 
@@ -133,6 +133,7 @@ def generate_subtopics(formdata: dict):
     """
 
     response = llm_request(prompt)
+    print(response)
     return json.loads(response)
 
 

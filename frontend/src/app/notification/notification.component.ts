@@ -7,6 +7,7 @@ import { NotificationService } from '../shared/notification.service';
 
 @Component({
   selector: 'app-notification',
+  standalone: true,
   imports: [
     InfoiconComponent,
     CrossIconComponent,

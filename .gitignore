@@ -3,7 +3,7 @@
 # backend gitignore
 
 /backend/venv
-/backend/.env
+/backend/.env*
 
 
 # frontend gitignore
